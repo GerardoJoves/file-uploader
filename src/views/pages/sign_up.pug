@@ -1,0 +1,17 @@
+extends ../layouts/default.pug
+
+block content
+  main
+    h1= title
+    form(method='POST')
+      label(for='username') Username
+      input(id='username' name='username' type='text')
+      label(for='password') Password
+      input(id='password' name='password' type='password')
+      label(for='passwordConfirmation') Confirm password
+      input(id='passwordConfirmaiton' name='passwordConfirmation' type='password')
+      button(type='submit') Sign up
+    if errors
+      ul
+        each err in errors
+          li= err.msg
