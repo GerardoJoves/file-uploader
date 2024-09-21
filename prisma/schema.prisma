@@ -18,3 +18,10 @@ model User {
   username String @unique @db.VarChar(25)
   password String
 }
+
+model Session {
+  id        String   @id
+  sid       String   @unique
+  data      String
+  expiresAt DateTime
+}

@@ -1,0 +1,7 @@
+extends ../layouts/default.pug
+
+block content
+  if user
+    h1 Welcome back #{ user.username }
+  else
+    h1 Hello World!
