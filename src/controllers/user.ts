@@ -24,8 +24,9 @@ const signupPost = [
     }
     const { username, password } = matchedData<UserSignupData>(req);
     const hashedPassword = await bcrypt.hash(password, 10);
-    await prisma.user.create({
-      data: { username: username, password: hashedPassword },
+    const user = { username: username, password: hashedPassword };
+    await prisma.block.create({
+      data: { name: 'home', type: 'ROOT', owner: { create: user } },
     });
     res.redirect('/users/log_in');
   }),

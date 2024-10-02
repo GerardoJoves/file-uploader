@@ -3,5 +3,6 @@ extends ../layouts/default.pug
 block content
   if user
     h1 Welcome back #{ user.username }
+    include ../components/folder.pug
   else
     h1 Hello World!

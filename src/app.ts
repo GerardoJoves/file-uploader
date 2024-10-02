@@ -3,9 +3,13 @@ import path from 'node:path';
 import { dirname } from 'path';
 import passport from 'passport';
 
-import usersRouter from './routes/users.js';
 import session from './config/session.js';
 import './config/passport.js';
+
+import homeRouter from './routes/home.js';
+import signupRouter from './routes/signup.js';
+import usersRouter from './routes/users.js';
+import foldersRouter from './routes/folders.js';
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -23,12 +27,14 @@ app.use(session);
 app.use(passport.session());
 
 // index route
-app.get('/', (req: Request, res: Response) => {
-  res.locals.user = req.user;
-  res.render('pages/home');
+app.get('/', (_req: Request, res: Response) => {
+  res.redirect('/home');
 });
 
 // routes
+app.use('/home', homeRouter);
+app.use('/sign_up', signupRouter);
 app.use('/users', usersRouter);
+app.use('/folders', foldersRouter);
 
 app.listen(PORT, () => console.log(`App running on port ${PORT}`));

@@ -40,4 +40,7 @@ const userSignupValidation = [
     .withMessage('Incorrect password confirmation'),
 ];
 
-export { userSignupValidation };
+const folderNameValidation = () =>
+  body('folderName').trim().exists().isLength({ max: 255 });
+
+export { userSignupValidation, folderNameValidation };

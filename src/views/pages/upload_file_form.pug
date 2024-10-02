@@ -1,0 +1,8 @@
+extends ../layouts/default.pug
+
+block content
+  main
+    form(method='POST' enctype='multipart/form-data')
+      h1= title
+      input(type='file' name='uploaded_file')
+      button(type='submit') Upload
