@@ -1,9 +1,9 @@
 import { Router } from 'express';
 
-import blockController from '../controllers/block.js';
+import fileController from '../controllers/file.js';
 
 const router = Router();
 
-router.get('/:id', blockController.fileGet);
+router.get('/:id', fileController.fileGet);
 
 export default router;

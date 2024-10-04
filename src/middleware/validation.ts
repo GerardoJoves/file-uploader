@@ -1,4 +1,4 @@
-import { body } from 'express-validator';
+import { body, param } from 'express-validator';
 import prisma from '../lib/prisma.js';
 
 export type UserSignupData = {
@@ -43,4 +43,6 @@ const userSignupValidation = [
 const folderNameValidation = () =>
   body('folderName').trim().exists().isLength({ max: 255 });
 
-export { userSignupValidation, folderNameValidation };
+const folderParamIdValidation = () => param('id').isInt().toInt();
+
+export { userSignupValidation, folderNameValidation, folderParamIdValidation };

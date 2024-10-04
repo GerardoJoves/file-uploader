@@ -1,19 +1,20 @@
 import { Router } from 'express';
 
-import blockController from '../controllers/block.js';
+import folderController from '../controllers/folder.js';
+import fileController from '../controllers/file.js';
 
 const router = Router();
 
-router.get('/', blockController.rootGet);
+router.get('/', folderController.rootFolderGet);
 
 router
   .route('/upload_file')
-  .get(blockController.uploadFileGet)
-  .post(blockController.uploadRootFilePost);
+  .get(fileController.uploadFileGet)
+  .post(fileController.uploadRootFilePost);
 
 router
   .route('/create_folder')
-  .get(blockController.createChildFolderGet)
-  .post(blockController.createRootChildFolderPost);
+  .get(folderController.createChildFolderGet)
+  .post(folderController.createRootChildFolderPost);
 
 export default router;
