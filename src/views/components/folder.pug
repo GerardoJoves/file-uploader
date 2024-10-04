@@ -1,6 +1,0 @@
-div
-  ul
-    each child in folder.children
-      li: a(
-        href= `/${child.type === 'FOLDER' ? 'folders' : 'files'}/${child.id}`
-      )= child.name

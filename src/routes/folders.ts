@@ -11,7 +11,9 @@ router
 
 router
   .route('/:id/create_folder')
-  .get(blockController.createFolderGet)
-  .post(blockController.createFolderPost);
+  .get(blockController.createChildFolderGet)
+  .post(blockController.createChildFolderPost);
+
+router.get('/:id', blockController.folderGet);
 
 export default router;

@@ -1,0 +1,8 @@
+div
+  ul
+    if folder.children.length > 0
+      each child in folder.children
+        li
+          a(href= `/${child.type === 'FOLDER' ? 'folders' : 'files'}/${child.id}`)= child.name
+    else
+      li This folder is empty

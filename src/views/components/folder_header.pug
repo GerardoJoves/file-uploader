@@ -1,0 +1,16 @@
+- const folderPath = folder.type === 'ROOT' ? '/home' : `/folders/${folder.id}`;
+- const parent = folder.parentFolder || null;
+
+div
+  if parent
+    if parent.type === 'ROOT'
+      a(href='/home') home
+      span >
+    else
+      a(href=`/folders/${parent.id}`)= parent.name
+      span >
+  span= folder.name
+
+div
+  a(href= folderPath + '/create_folder') Create New Folder
+  a(href= folderPath + '/upload_file') Upload File
