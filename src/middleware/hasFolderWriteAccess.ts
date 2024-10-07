@@ -3,7 +3,7 @@ import asyncHandle from 'express-async-handler';
 
 import prisma from '../lib/prisma.js';
 
-const checkFolderWriteAccess = asyncHandle(
+const hasFolderWriteAccess = asyncHandle(
   async (req: Request, _res: Response, next: NextFunction) => {
     const user = req.user as Express.User;
     // if no id is passed, render user's root folder
@@ -17,4 +17,4 @@ const checkFolderWriteAccess = asyncHandle(
   },
 );
 
-export default checkFolderWriteAccess;
+export default hasFolderWriteAccess;

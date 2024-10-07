@@ -5,15 +5,15 @@ import multer from 'multer';
 import asyncHandler from 'express-async-handler';
 
 import prisma from '../lib/prisma.js';
-import checkAuth from '../middleware/checkAuth.js';
-import checkFolderWriteAccess from 'src/middleware/checkFolderWriteAccess.js';
+import isAuthenticated from '../middleware/isAuthenticated.js';
+import hasFolderWriteAccess from 'src/middleware/hasFolderWriteAccess.js';
 
 const upload = multer({
   dest: path.join(import.meta.dirname, '../../uploads'),
 });
 
 const fileGet = [
-  checkAuth,
+  isAuthenticated,
   asyncHandler(async (req: Request, res: Response) => {
     const user = req.user as Express.User;
     const id = parseInt(req.params.id);
@@ -28,15 +28,15 @@ const fileGet = [
 ];
 
 const uploadFileGet = [
-  checkAuth,
+  isAuthenticated,
   (_req: Request, res: Response) => {
     res.render('pages/upload_file_form', { title: 'Uplaod File' });
   },
 ];
 
 const uploadFilePost = [
-  checkAuth,
-  checkFolderWriteAccess,
+  isAuthenticated,
+  hasFolderWriteAccess,
   upload.single('uploaded_file'),
   asyncHandler(async (req: Request, res: Response) => {
     const file = req.file as Express.Multer.File;

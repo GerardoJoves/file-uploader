@@ -4,12 +4,12 @@ import { matchedData, validationResult } from 'express-validator';
 import { Prisma } from '@prisma/client';
 
 import prisma from '../lib/prisma.js';
-import checkAuth from '../middleware/checkAuth.js';
-import checkFolderWriteAccess from 'src/middleware/checkFolderWriteAccess.js';
+import isAuthenticated from '../middleware/isAuthenticated.js';
+import hasFolderWriteAccess from 'src/middleware/hasFolderWriteAccess.js';
 import { folderNameValidation } from '../middleware/validation.js';
 
 const folderGet = [
-  checkAuth,
+  isAuthenticated,
   asyncHandler(async (req: Request, res: Response) => {
     const user = req.user as Express.User;
     const id = req.params.id ? parseInt(req.params.id) : null;
@@ -29,16 +29,16 @@ const folderGet = [
 ];
 
 const createFolderGet = [
-  checkAuth,
+  isAuthenticated,
   (_req: Request, res: Response) => {
     res.render('pages/create_folder_form', { title: 'Create Folder' });
   },
 ];
 
 const createFolderPost = [
-  checkAuth,
+  isAuthenticated,
   folderNameValidation(),
-  checkFolderWriteAccess,
+  hasFolderWriteAccess,
   asyncHandler(async (req: Request, res: Response) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
