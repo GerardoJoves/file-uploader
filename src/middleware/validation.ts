@@ -43,6 +43,6 @@ const userSignupValidation = [
 const folderNameValidation = () =>
   body('folderName').trim().exists().isLength({ max: 255 });
 
-const folderParamIdValidation = () => param('id').isInt().toInt();
+const folderParamIdValidation = () => param('id').isInt().toInt().optional();
 
 export { userSignupValidation, folderNameValidation, folderParamIdValidation };

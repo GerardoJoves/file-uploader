@@ -12,8 +12,8 @@ router
 
 router
   .route('/:id/create_folder')
-  .get(folderController.createChildFolderGet)
-  .post(folderController.createChildFolderPost);
+  .get(folderController.createFolderGet)
+  .post(folderController.createFolderPost);
 
 router.get('/:id', folderController.folderGet);
 

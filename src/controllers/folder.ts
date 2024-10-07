@@ -1,117 +1,77 @@
-import { NextFunction, Request, Response } from 'express';
+import { Request, Response } from 'express';
 import asyncHandler from 'express-async-handler';
 import { matchedData, validationResult } from 'express-validator';
+import { Prisma } from '@prisma/client';
 
 import prisma from '../lib/prisma.js';
 import checkAuth from '../middleware/checkAuth.js';
 import checkFolderWriteAccess from 'src/middleware/checkFolderWriteAccess.js';
-import {
-  folderNameValidation,
-  folderParamIdValidation,
-} from '../middleware/validation.js';
-
-async function createFolder(
-  name: string,
-  user: Express.User,
-  parentId: number,
-) {
-  return await prisma.block.create({
-    data: {
-      name: name,
-      type: 'FOLDER',
-      ownerId: user.id,
-      parentFolderId: parentId,
-    },
-  });
-}
-
-function checkFolderValidationResult(type: 'ROOT' | 'FOLDER') {
-  return (req: Request, res: Response, next: NextFunction) => {
-    const errors = validationResult(req);
-    if (type === 'FOLDER') {
-      const data = matchedData(req);
-      if (!data.id) throw new Error('400');
-    }
-    if (!errors.isEmpty()) {
-      const locals = { title: 'Create Folder', errors: errors.array() };
-      res.render('pages/create_folder_form', locals);
-      return;
-    }
-    next();
-  };
-}
+import { folderNameValidation } from '../middleware/validation.js';
 
 const folderGet = [
   checkAuth,
   asyncHandler(async (req: Request, res: Response) => {
     const user = req.user as Express.User;
-    const id = parseInt(req.params.id);
-    if (isNaN(id)) throw new Error('400');
-    const folder = await prisma.block.findUnique({
-      where: { id: id, ownerId: user.id, type: 'FOLDER' },
-      include: { children: { orderBy: { type: 'desc' } }, parentFolder: true },
-    });
+    const id = req.params.id ? parseInt(req.params.id) : null;
+    if (id != null && isNaN(id)) throw new Error('400');
+    const where: Prisma.BlockWhereInput =
+      id == null
+        ? { type: 'ROOT', ownerId: user.id }
+        : { type: 'FOLDER', id: id, ownerId: user.id };
+    const include: Prisma.BlockInclude = {
+      children: { orderBy: { type: 'desc' } },
+      parentFolder: true,
+    };
+    const folder = await prisma.block.findFirst({ where, include });
     if (!folder) throw new Error('404');
     res.render('pages/folder', { title: folder.name, folder });
   }),
 ];
 
-const rootFolderGet = [
-  checkAuth,
-  asyncHandler(async (req: Request, res: Response) => {
-    const user = req.user as Express.User;
-    const root = await prisma.block.findFirst({
-      where: { ownerId: user.id, type: 'ROOT' },
-      include: { children: { orderBy: { type: 'desc' } } },
-    });
-    res.render('pages/home', { title: 'Home', folder: root, user });
-  }),
-];
-
-const createChildFolderGet = [
+const createFolderGet = [
   checkAuth,
   (_req: Request, res: Response) => {
     res.render('pages/create_folder_form', { title: 'Create Folder' });
   },
 ];
 
-const createChildFolderPost = [
+const createFolderPost = [
   checkAuth,
+  folderNameValidation(),
   checkFolderWriteAccess,
-  folderNameValidation(),
-  folderParamIdValidation(),
-  checkFolderValidationResult('FOLDER'),
   asyncHandler(async (req: Request, res: Response) => {
-    const user = req.user as Express.User;
-    const { id: parentFolderId, folderName } = matchedData<{
-      id: number;
-      folderName: string;
-    }>(req);
-    await createFolder(folderName, user, parentFolderId);
-    res.redirect('/folders/' + parentFolderId);
-  }),
-];
-
-const createRootChildFolderPost = [
-  checkAuth,
-  folderNameValidation(),
-  checkFolderValidationResult('ROOT'),
-  asyncHandler(async (req: Request, res: Response) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      const locals = { title: 'Create Folder', errors: errors.array() };
+      res.render('pages/create_folder_form', locals);
+      return;
+    }
     const user = req.user as Express.User;
     const { folderName } = matchedData<{ folderName: string }>(req);
-    const root = await prisma.block.findFirst({
-      where: { type: 'ROOT', ownerId: user.id },
+    let parentFolderId = req.params.id ? parseInt(req.params.id) : null;
+    if (parentFolderId == null) {
+      const root = await prisma.block.findFirst({
+        where: { type: 'ROOT', ownerId: user.id },
+      });
+      if (!root) throw new Error('404');
+      parentFolderId = root.id;
+    } else if (isNaN(parentFolderId)) {
+      throw new Error('400');
+    }
+    await prisma.block.create({
+      data: {
+        name: folderName,
+        type: 'FOLDER',
+        ownerId: user.id,
+        parentFolderId,
+      },
     });
-    if (!root) throw new Error('404');
-    await createFolder(folderName, user, root.id);
-    res.redirect('/home');
+    res.redirect(req.params.id ? `/folders/${parentFolderId}` : '/home');
   }),
 ];
 
 export default {
-  rootFolderGet,
   folderGet,
-  createChildFolderGet,
-  createChildFolderPost,
-  createRootChildFolderPost,
+  createFolderGet,
+  createFolderPost,
 };

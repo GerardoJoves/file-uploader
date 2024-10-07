@@ -12,24 +12,6 @@ const upload = multer({
   dest: path.join(import.meta.dirname, '../../uploads'),
 });
 
-async function createFile(
-  file: Express.Multer.File,
-  user: Express.User,
-  parentId: number,
-) {
-  return await prisma.block.create({
-    data: {
-      ownerId: user.id,
-      name: file.originalname,
-      contentType: file.mimetype,
-      fileUrl: file.path,
-      type: 'FILE',
-      sizeInBytes: file.size,
-      parentFolderId: parentId,
-    },
-  });
-}
-
 const fileGet = [
   checkAuth,
   asyncHandler(async (req: Request, res: Response) => {
@@ -52,7 +34,6 @@ const uploadFileGet = [
   },
 ];
 
-// Upload file to a regual folder
 const uploadFilePost = [
   checkAuth,
   checkFolderWriteAccess,
@@ -60,27 +41,29 @@ const uploadFilePost = [
   asyncHandler(async (req: Request, res: Response) => {
     const file = req.file as Express.Multer.File;
     const user = req.user as Express.User;
-    const folderId = parseInt(req.params.id);
-    await createFile(file, user, folderId);
-    res.redirect('/folders/' + folderId);
-  }),
-];
-
-// Upload file to user's root folder
-const uploadRootFilePost = [
-  checkAuth,
-  upload.single('uploaded_file'),
-  asyncHandler(async (req: Request, res: Response) => {
-    const user = req.user as Express.User;
-    const file = req.file;
-    const folderId = parseInt(req.params.id);
-    if (!file || isNaN(folderId)) throw new Error('400');
-    const root = await prisma.block.findUnique({
-      where: { id: folderId, ownerId: user.id, type: 'ROOT' },
+    let parentFolderId = req.params.id ? parseInt(req.params.id) : null;
+    if (!file) throw new Error('400');
+    if (parentFolderId == null) {
+      const root = await prisma.block.findFirst({
+        where: { ownerId: user.id, type: 'ROOT' },
+      });
+      if (!root) throw new Error('404');
+      parentFolderId = root.id;
+    } else if (isNaN(parentFolderId)) {
+      throw new Error('400');
+    }
+    await prisma.block.create({
+      data: {
+        ownerId: user.id,
+        name: file.originalname,
+        contentType: file.mimetype,
+        fileUrl: file.path,
+        type: 'FILE',
+        sizeInBytes: file.size,
+        parentFolderId,
+      },
     });
-    if (!root) throw new Error('404');
-    await createFile(file, user, root.id);
-    res.redirect('/home');
+    res.redirect(req.params.id ? `/folders/${parentFolderId}` : '/home');
   }),
 ];
 
@@ -88,5 +71,4 @@ export default {
   fileGet,
   uploadFileGet,
   uploadFilePost,
-  uploadRootFilePost,
 };
