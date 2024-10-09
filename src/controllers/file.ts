@@ -1,4 +1,5 @@
 import path from 'node:path';
+import fs from 'node:fs/promises';
 
 import { Request, Response } from 'express';
 import multer from 'multer';
@@ -79,6 +80,8 @@ const deleteFilePost = [
     });
     if (!file) return res.redirect('/home');
     if (file.ownerId != user.id) throw new Error('401');
+    if (!file.fileUrl) throw new Error('500');
+    await fs.unlink(file.fileUrl);
     await prisma.block.delete({ where: { id: file.id } });
     res.redirect(
       file.parentFolder && file.parentFolder.type != 'ROOT'
