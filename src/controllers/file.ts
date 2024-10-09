@@ -88,9 +88,26 @@ const deleteFilePost = [
   }),
 ];
 
+const downloadFile = [
+  isAuthenticated,
+  asyncHandler(async (req: Request, res: Response) => {
+    const user = req.user as Express.User;
+    const fileId = parseInt(req.params.id);
+    if (isNaN(fileId)) throw new Error('400');
+    const file = await prisma.block.findUnique({
+      where: { id: fileId, type: 'FILE' },
+    });
+    if (!file) throw new Error('404');
+    if (file.ownerId != user.id) throw new Error('401');
+    if (!file.fileUrl) throw new Error('500');
+    res.download(file.fileUrl, file.name);
+  }),
+];
+
 export default {
   fileGet,
   uploadFileGet,
   uploadFilePost,
   deleteFilePost,
+  downloadFile,
 };
