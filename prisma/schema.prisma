@@ -5,7 +5,8 @@
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
+  previewFeatures = ["typedSql"]
 }
 
 datasource db {
@@ -33,7 +34,7 @@ model Block {
   ownerId        Int
   name           String
   type           BlockType
-  parentFolder   Block?    @relation(name: "parentChildren", fields: [parentFolderId], references: [id])
+  parentFolder   Block?    @relation(name: "parentChildren", fields: [parentFolderId], references: [id], onDelete: Cascade)
   parentFolderId Int?
   children       Block[]   @relation(name: "parentChildren")
   createdAt      DateTime  @default(now())

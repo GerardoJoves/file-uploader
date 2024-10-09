@@ -12,5 +12,9 @@ div
   span= folder.name
 
 div
-  a(href= folderPath + '/create_folder') Create New Folder
-  a(href= folderPath + '/upload_file') Upload File
+  ul
+    li: a(href= folderPath + '/create_folder') Create New Folder 
+    li: a(href= folderPath + '/upload_file') Upload File 
+      if (folder.type != 'ROOT')
+        li: a(href=`/folders/${folder.id}/update`) Rename Folder 
+        li: a(href=`/folders/${folder.id}/delete`) Delete Foder

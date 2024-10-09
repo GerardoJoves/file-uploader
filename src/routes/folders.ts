@@ -15,6 +15,16 @@ router
   .get(folderController.createFolderGet)
   .post(folderController.createFolderPost);
 
+router
+  .route('/:id/update')
+  .get(folderController.updateFolderGet)
+  .post(folderController.updateFolderPost);
+
+router
+  .route('/:id/delete')
+  .get(folderController.deleteFolderGet)
+  .post(folderController.deleteFolderPost);
+
 router.get('/:id', folderController.folderGet);
 
 export default router;

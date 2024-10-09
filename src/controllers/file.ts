@@ -67,8 +67,30 @@ const uploadFilePost = [
   }),
 ];
 
+const deleteFilePost = [
+  isAuthenticated,
+  asyncHandler(async (req: Request, res: Response) => {
+    const user = req.user as Express.User;
+    const fileId = parseInt(req.params.id);
+    if (isNaN(fileId)) throw new Error('400');
+    const file = await prisma.block.findUnique({
+      where: { id: fileId, type: 'FILE' },
+      include: { parentFolder: true },
+    });
+    if (!file) return res.redirect('/home');
+    if (file.ownerId != user.id) throw new Error('401');
+    await prisma.block.delete({ where: { id: file.id } });
+    res.redirect(
+      file.parentFolder && file.parentFolder.type != 'ROOT'
+        ? `/folders/${file.parentFolder.id}`
+        : '/home',
+    );
+  }),
+];
+
 export default {
   fileGet,
   uploadFileGet,
   uploadFilePost,
+  deleteFilePost,
 };
