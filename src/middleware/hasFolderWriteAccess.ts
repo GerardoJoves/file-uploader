@@ -6,8 +6,7 @@ import prisma from '../lib/prisma.js';
 const hasFolderWriteAccess = asyncHandle(
   async (req: Request, _res: Response, next: NextFunction) => {
     const user = req.user as Express.User;
-    // if no id is passed, render user's root folder
-    if (!req.params.id) next();
+    if (!req.params.id) return next();
     const id = parseInt(req.params.id);
     if (isNaN(id)) throw new Error('400');
     const folder = await prisma.block.findUnique({ where: { id: id } });
