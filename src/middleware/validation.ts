@@ -19,7 +19,10 @@ const usernameValidaton = () =>
     .trim()
     .isLength({ min: 4, max: 25 })
     .withMessage('Username must be 4 to 25 characters long')
-    .isAlphanumeric()
+    .custom((value: string) => {
+      const regex = /^[a-zA-Z0-9_]+$/;
+      return regex.test(value);
+    })
     .withMessage('Username must contain only letters, numbers, or underscores');
 
 const passwordValidation = () =>
