@@ -1,5 +1,3 @@
-import fs from 'node:fs/promises';
-
 import { NextFunction, Request, Response } from 'express';
 import asyncHandler from 'express-async-handler';
 import { matchedData, validationResult } from 'express-validator';
@@ -10,6 +8,7 @@ import prisma from '../lib/prisma.js';
 import isAuthenticated from '../middleware/isAuthenticated.js';
 import hasFolderWriteAccess from 'src/middleware/hasFolderWriteAccess.js';
 import { folderNameValidation } from '../middleware/validation.js';
+import supabase from 'src/lib/supabase.js';
 
 const handleFolderValidationErrors =
   (title: string) => (req: Request, res: Response, next: NextFunction) => {
@@ -143,9 +142,9 @@ const deleteFolderPost = [
       getRecursiveFilePaths(folder.id),
     );
     if (descendantFiles.length > 0) {
-      await Promise.all(
-        descendantFiles.map((f) => f.fileUrl && fs.unlink(f.fileUrl)),
-      );
+      const paths: string[] = [];
+      descendantFiles.forEach((f) => f.fileUrl && paths.push(f.fileUrl));
+      await supabase.storage.from('files').remove(paths);
     }
     await prisma.block.delete({ where: { id: folder.id } });
     res.redirect(

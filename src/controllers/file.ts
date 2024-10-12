@@ -1,16 +1,19 @@
-import path from 'node:path';
-import fs from 'node:fs/promises';
-
 import { Request, Response } from 'express';
 import multer from 'multer';
 import asyncHandler from 'express-async-handler';
+import { decode } from 'base64-arraybuffer';
+import { v4 as uuidv4 } from 'uuid';
 
 import prisma from '../lib/prisma.js';
+import supabase from '../lib/supabase.js';
 import isAuthenticated from '../middleware/isAuthenticated.js';
 import hasFolderWriteAccess from 'src/middleware/hasFolderWriteAccess.js';
 
 const upload = multer({
-  dest: path.join(import.meta.dirname, '../../uploads'),
+  storage: multer.memoryStorage(),
+  limits: {
+    fileSize: 5 * 1024 * 1024, // limit file size to 5MB
+  },
 });
 
 const fileGet = [
@@ -53,12 +56,19 @@ const uploadFilePost = [
     } else if (isNaN(parentFolderId)) {
       throw new Error('400');
     }
+    const fileBase64 = decode(file.buffer.toString('base64'));
+    const { data, error } = await supabase.storage
+      .from('files')
+      .upload(uuidv4(), fileBase64, {
+        contentType: file.mimetype,
+      });
+    if (error) throw new Error('500');
     await prisma.block.create({
       data: {
         ownerId: user.id,
         name: file.originalname,
         contentType: file.mimetype,
-        fileUrl: file.path,
+        fileUrl: data.path,
         type: 'FILE',
         sizeInBytes: file.size,
         parentFolderId,
@@ -81,7 +91,10 @@ const deleteFilePost = [
     if (!file) return res.redirect('/home');
     if (file.ownerId != user.id) throw new Error('401');
     if (!file.fileUrl) throw new Error('500');
-    await fs.unlink(file.fileUrl);
+    const { error } = await supabase.storage
+      .from('files')
+      .remove([file.fileUrl]);
+    if (error) throw new Error('500');
     await prisma.block.delete({ where: { id: file.id } });
     res.redirect(
       file.parentFolder && file.parentFolder.type != 'ROOT'
@@ -103,7 +116,13 @@ const downloadFile = [
     if (!file) throw new Error('404');
     if (file.ownerId != user.id) throw new Error('401');
     if (!file.fileUrl) throw new Error('500');
-    res.download(file.fileUrl, file.name);
+    const { data } = await supabase.storage
+      .from('files')
+      .createSignedUrl(file.fileUrl, 60, {
+        download: true,
+      });
+    if (!data) throw new Error('500');
+    res.redirect(data.signedUrl);
   }),
 ];
 
