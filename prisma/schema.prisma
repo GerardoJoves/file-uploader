@@ -38,10 +38,11 @@ model Block {
   parentFolder   Block?    @relation(name: "parentChildren", fields: [parentFolderId], references: [id], onDelete: Cascade)
   parentFolderId Int?
   children       Block[]   @relation(name: "parentChildren")
-  createdAt      DateTime  @default(now())
+  uploadTime     DateTime?
+  deletionTime   DateTime?
   updatedAt      DateTime  @updatedAt
   contentType    String?
-  fileUrl        String?
+  storePath      String?
   sizeInBytes    Int?
 
   @@index([ownerId, type, name])

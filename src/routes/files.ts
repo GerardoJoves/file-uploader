@@ -1,8 +1,11 @@
 import { Router } from 'express';
 
 import fileController from '../controllers/file.js';
+import isAuthenticated from 'src/middleware/isAuthenticated.js';
 
 const router = Router();
+
+router.use(isAuthenticated);
 
 router.get('/:id/download', fileController.downloadFile);
 router.post('/:id/delete', fileController.deleteFilePost);
