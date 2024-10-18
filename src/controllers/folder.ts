@@ -2,6 +2,8 @@ import { Request, Response } from 'express';
 import asyncHandler from 'express-async-handler';
 import { matchedData, validationResult } from 'express-validator';
 import { Block, Prisma } from '@prisma/client';
+import { format } from 'date-fns';
+import convertFileSize from '../helpers/convertFileSize.js';
 import { updateDeletionTimeCascadeReturningStorePaths } from '@prisma/client/sql';
 
 import prisma from '../lib/prisma.js';
@@ -16,12 +18,22 @@ const folderGet = asyncHandler(async (req: Request, res: Response) => {
       ? { type: 'ROOT', ownerId: user.id }
       : { type: 'FOLDER', id: id, ownerId: user.id, deletionTime: null };
   const include: Prisma.BlockInclude = {
-    children: { where: { deletionTime: null }, orderBy: { type: 'desc' } },
+    children: {
+      where: { deletionTime: null },
+      orderBy: { type: 'desc' },
+      include: { owner: { select: { id: true, username: true } } },
+    },
     parentFolder: true,
   };
   const folder = await prisma.block.findFirst({ where, include });
   if (!folder) throw new Error('404');
-  res.render('pages/folder', { title: folder.name, folder });
+  res.render('pages/folder', {
+    title: folder.name,
+    folder,
+    user,
+    format,
+    convertFileSize,
+  });
 });
 
 const createFolderGet = (_req: Request, res: Response) => {

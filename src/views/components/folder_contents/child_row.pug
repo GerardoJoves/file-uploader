@@ -1,0 +1,20 @@
+- let { id, owner, updatedAt, sizeInBytes: size, name, type } = child;
+- owner = owner.id === user.id ? 'me' : owner.username;
+- updatedAt = format(updatedAt, 'MMM d, yyyy');
+- size = size ? convertFileSize(size) : '-';
+- const path = (type === 'FOLDER' ? '/folders/' : '/files/') + id;
+
+tr(class='border-b border-gray-300')
+  td(class='px-5 py-2')
+    div(class='flex items-center gap-3')
+      div(class='text-xl')
+        if type === 'FOLDER'
+          include ../icons/folder.html
+        else
+          include ../icons/file.html
+      a(href= path)= name
+  td(class='text-gray-700 px-5 py-3')= owner
+  td(class='text-gray-700 px-5 py-3')= updatedAt 
+  td(class='text-gray-700 px-5 py-3')= size
+  td(class='text-gray-700 px-5 py-3')
+    include ../icons/three_dots.html

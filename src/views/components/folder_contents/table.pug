@@ -1,0 +1,12 @@
+table(class='w-full')
+  - const thClass = 'text-left text-gray-500 px-5 py-3 font-normal';
+  thead
+    tr(class= 'border-b border-gray-300')
+      th(class= thClass + ' w-1/2') Name
+      th(class= thClass) Owner
+      th(class= thClass) Last modified
+      th(class= thClass) File size
+      th
+  tbody
+    each child in folder.children
+      include ./child_row.pug

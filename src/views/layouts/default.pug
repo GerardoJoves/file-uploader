@@ -4,10 +4,11 @@ html
     title= title || 'File Uploader'
     meta(charset='utf-8')
     meta(name='viewport' content='width=device-width' initial-scale=1)
-    link(rel="stylesheet", href="css/output.css")
-  body
+    link(rel="stylesheet", href="/css/output.css")
+  body(class='text-gray-950')
     aside
       nav
         ul
           li: a(href='/home') Home
-    block content
+    main(class='px-10 py-6')
+      block content
