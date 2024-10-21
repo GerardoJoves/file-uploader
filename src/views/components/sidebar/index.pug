@@ -1,0 +1,16 @@
+div(class='h-full px-4 py-5 overflow-y-auto bg-gray-50')
+  div(class='text-2xl mb-4 flex items-center')
+    span: include ../icons/archive_fill.html
+    span(class='ml-4') Archive
+  div(class='mb-4')
+    button(class='px-4 py-3 rounded-2xl bg-white shadow-lg flex items-center')
+      span(class='text-2xl'): include ../icons/plus.html
+      span(class='ml-2') New
+  nav: ul
+    li: a(href='/home' class='flex items-center p-2 rounded-lg hover:bg-gray-200')
+      include ../icons/house.html
+      span(class='ml-2') Home
+    li: a(href='/favorites' class='flex items-center p-2 rounded-lg hover:bg-gray-200')
+      include ../icons/star.html
+      span(class='ml-2') Favorites
+
