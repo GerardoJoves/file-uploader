@@ -1,0 +1,6 @@
+div(class='flex justify-between p-4 sm:pl-0')
+  include ./search_bar.pug
+  div(class='flex items-center')
+    span(class='text-lg'): include ../icons/person_circle.html
+    span(class='ml-2')= user.username
+    

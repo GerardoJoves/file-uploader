@@ -5,8 +5,11 @@ html
     meta(charset='utf-8')
     meta(name='viewport' content='width=device-width' initial-scale=1)
     link(rel="stylesheet", href="/css/output.css")
-  body(class='text-gray-950')
+  body(class='text-gray-950 h-screen bg-gray-100')
     aside(class='fixed top-0 left-0 z-40 w-64 h-screen transition-transform -translate-x-full sm:translate-x-0')
       include ../components/sidebar/index.pug
-    main(class='p-4 sm:ml-64')
-      block content
+    div(class='sm:ml-64 h-full grid grid-rows-[auto_1fr]')
+      header(class='z-20')
+        include ../components/header/index.pug
+      main(class='px-4 py-6 bg-white sm:mr-4 sm:rounded-xl')
+        block content

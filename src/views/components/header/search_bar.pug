@@ -1,0 +1,16 @@
+
+form(class='w-2/5')
+  label(for='default-search' class='mb-2 text-sm font-medium text-gray-900 sr-only') Search
+  div(class='relative')
+    div(class='absolute pl-4 top-0 left-0 h-full pointer-events-none text-gray-500 flex items-center')
+      include ../icons/magnifier.html
+    input(
+      type='search' 
+      id='default-search' 
+      class='block w-full p-4 pl-10 text-sm text-gray-900 border border-gray-300 rounded-xl bg-white'
+    )
+    div(class='absolute pr-4 top-0 right-0 h-full flex items-center')
+      button(
+        type='submit'
+        class='font-medium text-sm px-4 py-2 border border-gray-300 rounded-xl'
+      ) Search
