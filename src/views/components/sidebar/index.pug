@@ -1,16 +1,14 @@
 div(class='h-full px-4 py-5 overflow-y-auto')
-  div(class='mb-5 flex items-end')
-    span(class='text-4xl'): include ../icons/cloud.html
-    span(class='ml-4 text-2xl') Storage
-  div(class='mb-5')
-    button(class='px-4 py-3 bg-white border border-gray-300 rounded-xl flex items-center')
-      span(class='text-2xl'): include ../icons/plus.html
-      span(class='ml-2') New
+  div(class='mb-6 flex items-center')
+    span(class='text-3xl'): include ../icons/archive.html
+    span(class='ml-3 text-xl') File_Uploader
+  div(class='mb-6')
+    include ./new_dropdown.pug
   nav: ul
     li: a(href='/home' class='flex items-center p-2 rounded-lg hover:bg-gray-200')
-      include ../icons/house.html
-      span(class='ml-2') Home
+      span(class='text-lg'): include ../icons/house.html
+      span(class='ml-3') Home
     li: a(href='/favorites' class='flex items-center p-2 rounded-lg hover:bg-gray-200')
-      include ../icons/star.html
-      span(class='ml-2') Favorites
+      span(class='text-lg'): include ../icons/star.html
+      span(class='ml-3') Favorites
 

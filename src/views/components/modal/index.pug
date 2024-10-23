@@ -1,0 +1,73 @@
+- const btn = 'text-sm text-gray-700 px-3 py-2 bg-white hover:bg-gray-100 rounded-lg disabled:text-gray-400';
+
+mixin createRenameForm(action)
+  form(method='POST' :action='detail.path' class='px-5 py-6')
+    h2(class='mb-5 text-lg')
+      | #{ action === 'createFolder' ? 'New Folder' : 'Rename' }
+    div(class='mb-5')
+      input(id='name' type="text" name='name' x-model='name' class='input-primary' required)
+    div(class='flex justify-end gap-2')
+      button(type='button' @click='closeModal' class= btn) Cancel
+      button(type='submit' :disabled='() => !name' class= btn)
+        | #{ action === 'createFolder' ? 'Create' : 'Update' }
+
+mixin deleteForm(type)
+  form(method='POST' :action='detail.path' class='px-5 py-6')
+    h2(class='mb-5 text-lg') Delete 
+      // capitalize type
+      | #{ type.replace(/^\w/, (char) => char.toUpperCase()) }
+    p(class='mb-5 text-gray-700 text-sm') 
+      | Are you sure you want to delete the #{type} "
+      span(x-text='detail.name')
+      | "?
+      | #{ type === 'folder' ? 'All contents within the folder will also be deleted.' : '' }
+    div(class='flex justify-end gap-2')
+      button(type='button' @click='closeModal' class= btn) Cancel
+      button(type='submit' class= btn) Delete
+
+div(
+  x-cloak
+  x-data=`{
+    isOpen: false, 
+    detail: {}, 
+    name: '',
+    closeModal() { this.isOpen = false }
+  }`
+  x-show='isOpen'
+  x-transition.opacity
+  @open-modal.window=`() => {
+    isOpen = true;
+    detail = $event.detail;
+    name = $event.detail.name;
+  }`
+  @keydown.escape.window='closeModal'
+  class= 'fixed top-0 left-0 w-full h-full z-30 bg-gray-500/50 p-6 flex justify-center items-center'
+)
+  div(@click.outside='closeModal' class='bg-white max-w-[400px] max-h-full rounded-lg w-full')
+    template(x-if="detail.action === 'createFolder'")
+      +createRenameForm('createFolder')
+
+    template(x-if="detail.action === 'rename'")
+      +createRenameForm('rename')
+
+    template(x-if="detail.action === 'delete' && detail.type === 'FOLDER'")
+      +deleteForm('folder')
+
+    template(x-if="detail.action === 'delete' && detail.type === 'FILE'")
+      +deleteForm('file')
+
+    template(x-if="detail.action === 'uploadFile'")
+      form(method='POST' :action='detail.path' enctype='multipart/form-data' class='px-5 py-6')
+        h2(class='mb-5 text-lg') New File
+        div(class='mb-5')
+          input(
+            type='file' 
+            name='uploaded_file' 
+            required 
+            class='w-full text-gray-400 font-semibold text-sm bg-white border file:cursor-pointer cursor-pointer file:border-0 file:py-3 file:px-4 file:mr-4 file:bg-gray-100 file:hover:bg-gray-200 file:text-gray-500 rounded'
+          )
+          p(class='text-xs text-gray-400 mt-2') File size must be 5MB or less.
+        div(class='flex justify-end gap-2')
+          button(type='button' @click='closeModal' class= btn) Cancel
+          button(type='submit' class= btn) Upload
+

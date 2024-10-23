@@ -1,11 +1,10 @@
 table(class='w-full')
-  - const thClass = 'text-left text-gray-500 px-5 py-3 font-normal';
   thead
-    tr(class= 'border-b border-gray-300')
-      th(class= thClass + ' w-1/2') Name
-      th(class= thClass) Owner
-      th(class= thClass) Last modified
-      th(class= thClass) File size
+    tr(class= 'border-b border-gray-300 text-gray-600')
+      th(class='text-left px-4 py-3 font-normal w-4/5'): div(class='w-max') Name
+      th(class='text-left px-4 py-3 font-normal'): div(class='w-max') Owner
+      th(class='text-left px-4 py-3 font-normal'): div(class='w-max') Last modified
+      th(class='text-left px-4 py-3 font-normal'): div(class='w-max') File size
       th
   tbody
     each child in folder.children

@@ -1,0 +1,15 @@
+div(x-data='{ isOpen: false }' class='relative py-2')
+  button(@click='isOpen = !isOpen' class='flex items-center relative')
+    span(class='text-xl'): include ../icons/person.html
+    span(class='ml-2')= user.username
+  div(
+    x-cloak
+    x-transition
+    x-show='isOpen'
+    @click.outside='isOpen = false'
+    class='absolute top-full right-0 z-10 rounded-lg shadow-lg w-44 bg-white'
+  )
+    ul(class='py-2 text-sm text-gray-700')
+      li(class='px-4 py-2 hover:bg-gray-100 flex items-center')
+        include ../icons/logout.html
+        span(class='ml-2') Logout

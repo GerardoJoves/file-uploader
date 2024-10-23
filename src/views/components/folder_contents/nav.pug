@@ -1,8 +1,7 @@
 - const parent = folder.parentFolder;
-- const folderPath = folder.type === 'ROOT' ? '/home' : `/folders/${folder.id}`;
 
 nav(class='flex justify-between mb-6')
-  div(class='text-xl flex items-center')
+  div(class='text-lg flex items-center')
     if parent
       - const parentPath = parent.type === 'ROOT' ? '/home' : `/folders/${parent.id}`;
       a(href= parentPath)= parent.type === 'ROOT' ? 'Home' : parent.name

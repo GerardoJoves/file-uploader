@@ -1,0 +1,29 @@
+div(x-data=`{ isOpen: false, id: ${id} }` class='relative w-max ml-auto')
+  button(@click='isOpen = !isOpen' class='p-3')
+    include ../icons/three_dots.html
+  div(
+    x-cloak
+    x-transition
+    x-show='isOpen'
+    @click.outside='isOpen = false' 
+    class='absolute top-full right-0 z-10 rounded-lg shadow-lg w-44 bg-white'
+  )
+    ul(class='py-2 text-sm text-gray-700')
+      li(
+        @click=`() => {
+          $dispatch('open-modal', { action: 'rename', path: '${path}/update', name: '${name}' });
+          isOpen = false;
+        }`
+        class='px-4 py-2 hover:bg-gray-100 flex items-center cursor-pointer'
+      )
+        include ../icons/pencil_square.html
+        span(class='ml-2') Rename
+      li(
+        @click=`() => {
+          $dispatch('open-modal', { action: 'delete', path: '${path}/update', name: '${name}', type: '${type}' });
+          isOpen = false;
+        }`
+        class='px-4 py-2 hover:bg-gray-100 flex items-center cursor-pointer'
+      )
+        include ../icons/trash.html
+        span(class='ml-2') Delete

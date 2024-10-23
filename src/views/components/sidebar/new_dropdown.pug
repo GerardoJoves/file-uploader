@@ -1,0 +1,33 @@
+div(x-data='{ isOpen: false }' class='relative')
+  button(
+    @click='isOpen = !isOpen' 
+    class='px-4 py-3 bg-white border border-gray-300 rounded-xl flex items-center hover:bg-gray-100'
+  )
+    span(class='text-2xl'): include ../icons/plus.html
+    span(class='ml-2') New
+  div(
+    x-cloak
+    x-transition
+    x-show='isOpen'
+    @click.outside='isOpen = false'
+    class='absolute top-0 left-0 z-10 rounded-lg shadow-lg w-44 bg-white'
+  )
+    ul(class='py-2 text-sm text-gray-700')
+      li(
+        class='px-4 py-2 hover:bg-gray-100 flex items-center cursor-pointer'
+        @click=`() => {
+          $dispatch('open-modal', { action: 'uploadFile', path: '${folderPath}/upload_file' });
+          isOpen = false;
+        }`
+      )
+        include ../icons/file_upload.html
+        span(class='ml-2') Upload file
+      li(
+        class='px-4 py-2 hover:bg-gray-100 flex items-center cursor-pointer'
+        @click=`() => {
+          $dispatch('open-modal', { action: 'createFolder', path: '${folderPath}/create_folder' });
+          isOpen = false;
+        }`
+      )
+        include ../icons/folder_plus.html
+        span(class='ml-2') Create folder

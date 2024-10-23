@@ -33,6 +33,7 @@ const folderGet = asyncHandler(async (req: Request, res: Response) => {
     user,
     format,
     convertFileSize,
+    folderPath: folder.type === 'ROOT' ? '/home' : `/folders/${folder.id}`,
   });
 });
 
