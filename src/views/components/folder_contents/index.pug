@@ -1,3 +1,8 @@
-div(class='max-w-5xl mx-auto')
+div
   include ./nav.pug
-  include ./table.pug
+  if folder.children.length > 0
+    include ./table.pug
+  else
+    div(class='text-gray-700 flex flex-col items-center p-2')
+      div(class='text-5xl mb-4 mx-auto pt-4'): include ../icons/folder_open.html
+      p This folder is empty.

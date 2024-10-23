@@ -4,7 +4,10 @@ nav(class='flex justify-between mb-6')
   div(class='text-lg flex items-center')
     if parent
       - const parentPath = parent.type === 'ROOT' ? '/home' : `/folders/${parent.id}`;
-      a(href= parentPath)= parent.type === 'ROOT' ? 'Home' : parent.name
-      span(class='mx-2 text-gray-700 text-base')
+      a(
+        href= parentPath
+        class='text-gray-700 hover:underline underline-offset-4'
+      )= parent.type === 'ROOT' ? 'Home' : parent.name
+      span(class='mx-2 text-gray-700')
         include ../icons/chevron_right.html
     span= folder.type === 'ROOT' ? 'Home' : folder.name
