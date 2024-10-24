@@ -8,7 +8,7 @@ import { updateDeletionTimeCascadeReturningStorePaths } from '@prisma/client/sql
 
 import prisma from '../lib/prisma.js';
 import { folderNameValidation } from '../middleware/validation.js';
-import supabase from 'src/lib/supabase.js';
+import supabase from '../lib/supabase.js';
 
 const folderGet = asyncHandler(async (req: Request, res: Response) => {
   const user = req.user as Express.User;
