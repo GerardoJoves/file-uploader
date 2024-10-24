@@ -20,13 +20,13 @@ eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpac
 
 /***/ }),
 
-/***/ "./src/client/index.js":
+/***/ "./src/client/index.ts":
 /*!*****************************!*\
-  !*** ./src/client/index.js ***!
+  !*** ./src/client/index.ts ***!
   \*****************************/
-/***/ ((__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var alpinejs__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! alpinejs */ \"./node_modules/alpinejs/dist/module.esm.js\");\n\n\nwindow.Alpine = alpinejs__WEBPACK_IMPORTED_MODULE_0__[\"default\"];\n\nalpinejs__WEBPACK_IMPORTED_MODULE_0__[\"default\"].start();\n\n\n//# sourceURL=webpack://file-uploader/./src/client/index.js?");
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var alpinejs__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! alpinejs */ \"./node_modules/alpinejs/dist/module.esm.js\");\n\nconst Alpine = alpinejs__WEBPACK_IMPORTED_MODULE_0__[\"default\"];\nAlpine.start();\n\n\n//# sourceURL=webpack://file-uploader/./src/client/index.ts?");
 
 /***/ })
 
@@ -90,7 +90,7 @@ eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var alpi
 /******/ 	// startup
 /******/ 	// Load entry module and return exports
 /******/ 	// This entry module can't be inlined because the eval devtool is used.
-/******/ 	var __webpack_exports__ = __webpack_require__("./src/client/index.js");
+/******/ 	var __webpack_exports__ = __webpack_require__("./src/client/index.ts");
 /******/ 	
 /******/ })()
 ;

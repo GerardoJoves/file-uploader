@@ -7,11 +7,11 @@ html
     link(rel="stylesheet", href="/css/tailwind.output.css")
     script(defer src="/javascript/bundle.js")
   body(class='relative text-gray-950 h-screen bg-gray-100')
-    aside(class='fixed top-0 left-0 z-20 w-64 h-screen transition-transform -translate-x-full sm:translate-x-0')
+    aside(class='fixed top-0 left-0 z-40 w-64 h-screen transition-transform -translate-x-full sm:translate-x-0')
       include ../components/sidebar/index.pug
     div(class='sm:ml-64 h-full grid grid-rows-[auto_1fr]')
-      header(class='z-10')
+      header(class='z-30')
         include ../components/header/index.pug
-      main(class='px-6 py-8 bg-white sm:rounded-tl-xl sm:border border-gray-300 overflow-auto')
+      main(class='relative bg-white sm:rounded-tl-xl sm:border border-gray-300 overflow-auto')
         block content
     include ../components/modal/index.pug

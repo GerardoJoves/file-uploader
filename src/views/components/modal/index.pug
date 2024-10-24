@@ -41,7 +41,7 @@ div(
     name = $event.detail.name;
   }`
   @keydown.escape.window='closeModal'
-  class= 'fixed top-0 left-0 w-full h-full z-30 bg-gray-500/50 p-6 flex justify-center items-center'
+  class= 'fixed top-0 left-0 w-full h-full z-40 bg-gray-500/50 p-6 flex justify-center items-center'
 )
   div(@click.outside='closeModal' class='bg-white max-w-[400px] max-h-full rounded-lg w-full')
     template(x-if="detail.action === 'createFolder'")
