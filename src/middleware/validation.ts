@@ -44,7 +44,7 @@ const userSignupValidation = [
 ];
 
 const folderNameValidation = () =>
-  body('folderName').trim().exists().isLength({ max: 255 });
+  body('folderName').trim().exists().isLength({ min: 1, max: 255 });
 
 const folderParamIdValidation = () => param('id').isInt().toInt().optional();
 
