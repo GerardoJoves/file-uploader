@@ -26,7 +26,7 @@ eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpac
   \*****************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var alpinejs__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! alpinejs */ \"./node_modules/alpinejs/dist/module.esm.js\");\n\nconst Alpine = alpinejs__WEBPACK_IMPORTED_MODULE_0__[\"default\"];\nAlpine.start();\n\n\n//# sourceURL=webpack://file-uploader/./src/client/index.ts?");
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var alpinejs__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! alpinejs */ \"./node_modules/alpinejs/dist/module.esm.js\");\n\nconst Alpine = alpinejs__WEBPACK_IMPORTED_MODULE_0__[\"default\"];\nAlpine.store('modal', {\n    isOpen: false,\n    values: {},\n    open(operation, endpoint, values = {}) {\n        this.isOpen = true;\n        this.operation = operation;\n        this.endpoint = endpoint;\n        this.values = values;\n    },\n    close() {\n        this.isOpen = false;\n        this.values = {};\n    },\n});\nAlpine.start();\n\n\n//# sourceURL=webpack://file-uploader/./src/client/index.ts?");
 
 /***/ })
 

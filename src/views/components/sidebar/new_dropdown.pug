@@ -16,7 +16,7 @@ div(x-data='{ isOpen: false }' class='relative')
       li(
         class='px-4 py-2 hover:bg-gray-100 flex items-center cursor-pointer'
         @click=`() => {
-          $dispatch('open-modal', { action: 'uploadFile', path: '${folderPath}/upload_file' });
+          $store.modal.open('uploadFile', '${folderPath}/upload_file')
           isOpen = false;
         }`
       )
@@ -25,7 +25,7 @@ div(x-data='{ isOpen: false }' class='relative')
       li(
         class='px-4 py-2 hover:bg-gray-100 flex items-center cursor-pointer'
         @click=`() => {
-          $dispatch('open-modal', { action: 'createFolder', path: '${folderPath}/create_folder' });
+          $store.modal.open('createChildFolder', '${folderPath}/create_folder', { name: 'Untitled Folder' })
           isOpen = false;
         }`
       )

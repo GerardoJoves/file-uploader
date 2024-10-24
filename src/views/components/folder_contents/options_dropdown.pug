@@ -1,4 +1,7 @@
-div(x-data=`{ isOpen: false, id: ${id} }` class='relative w-max ml-auto')
+- const renameOperation = type === 'FOLDER' ? 'renameFolder' : 'renameFile';
+- const deleteOperation = type === 'FOLDER' ? 'deleteFolder' : 'deleteFile';
+
+div(x-data=`{ isOpen: false }` class='relative w-max ml-auto')
   button(@click='isOpen = !isOpen' class='p-3 text-base')
     include ../icons/three_dots.html
   div(
@@ -11,7 +14,7 @@ div(x-data=`{ isOpen: false, id: ${id} }` class='relative w-max ml-auto')
     ul(class='py-2 text-sm text-gray-700')
       li(
         @click=`() => {
-          $dispatch('open-modal', { action: 'rename', path: '${path}/update', name: '${name}' });
+          $store.modal.open('${renameOperation}', '${path}/update', { name: '${name}' });
           isOpen = false;
         }`
         class='px-4 py-2 hover:bg-gray-100 flex items-center cursor-pointer'
@@ -20,7 +23,7 @@ div(x-data=`{ isOpen: false, id: ${id} }` class='relative w-max ml-auto')
         span(class='ml-2') Rename
       li(
         @click=`() => {
-          $dispatch('open-modal', { action: 'delete', path: '${path}/update', name: '${name}', type: '${type}' });
+          $store.modal.open('${deleteOperation}', '${path}/delete', { name: '${name}' });
           isOpen = false;
         }`
         class='px-4 py-2 hover:bg-gray-100 flex items-center cursor-pointer'

@@ -1,63 +1,53 @@
 - const btn = 'text-sm text-gray-700 px-3 py-2 bg-white hover:bg-gray-100 rounded-lg disabled:text-gray-400';
 
 mixin createRenameForm(action)
-  form(method='POST' :action='detail.path' class='px-5 py-6')
+  form(method='POST' :action='endpoint' class='px-5 py-6')
     h2(class='mb-5 text-lg')
       | #{ action === 'createFolder' ? 'New Folder' : 'Rename' }
     div(class='mb-5')
-      input(id='name' type="text" name='folderName' x-model='name' class='input-primary' required)
+      input(id='name' type="text" name='folderName' x-model='values.name' class='input-primary' required)
     div(class='flex justify-end gap-2')
-      button(type='button' @click='closeModal' class= btn) Cancel
-      button(type='submit' :disabled='() => !name' class= btn)
+      button(type='button' @click='close' class= btn) Cancel
+      button(type='submit' :disabled='() => !values.name' class= btn)
         | #{ action === 'createFolder' ? 'Create' : 'Update' }
 
 mixin deleteForm(type)
-  form(method='POST' :action='detail.path' class='px-5 py-6')
+  form(method='POST' :action='endpoint' class='px-5 py-6')
     h2(class='mb-5 text-lg') Delete 
       // capitalize type
       | #{ type.replace(/^\w/, (char) => char.toUpperCase()) }
     p(class='mb-5 text-gray-700 text-sm') 
       | Are you sure you want to delete the #{type} "
-      span(x-text='detail.name')
+      span(x-text='values.name')
       | "?
       | #{ type === 'folder' ? 'All contents within the folder will also be deleted.' : '' }
     div(class='flex justify-end gap-2')
-      button(type='button' @click='closeModal' class= btn) Cancel
+      button(type='button' @click='close' class= btn) Cancel
       button(type='submit' class= btn) Delete
 
 div(
   x-cloak
-  x-data=`{
-    isOpen: false, 
-    detail: {}, 
-    name: '',
-    closeModal() { this.isOpen = false }
-  }`
+  x-data='$store.modal'
   x-show='isOpen'
   x-transition.opacity
-  @open-modal.window=`() => {
-    isOpen = true;
-    detail = $event.detail;
-    name = $event.detail.name;
-  }`
-  @keydown.escape.window='closeModal'
+  @keydown.escape.window='close'
   class= 'fixed top-0 left-0 w-full h-full z-40 bg-gray-500/50 p-6 flex justify-center items-center'
 )
-  div(@click.outside='closeModal' class='bg-white max-w-[400px] max-h-full rounded-lg w-full')
-    template(x-if="detail.action === 'createFolder'")
+  div(@click.outside='close' class='bg-white max-w-[400px] max-h-full rounded-lg w-full')
+    template(x-if="operation === 'createChildFolder'")
       +createRenameForm('createFolder')
 
-    template(x-if="detail.action === 'rename'")
+    template(x-if="operation === 'renameFolder' || operation === 'renameFile'")
       +createRenameForm('rename')
 
-    template(x-if="detail.action === 'delete' && detail.type === 'FOLDER'")
+    template(x-if="operation === 'deleteFolder'")
       +deleteForm('folder')
 
-    template(x-if="detail.action === 'delete' && detail.type === 'FILE'")
+    template(x-if="operation === 'deleteFile'")
       +deleteForm('file')
 
-    template(x-if="detail.action === 'uploadFile'")
-      form(method='POST' :action='detail.path' enctype='multipart/form-data' class='px-5 py-6')
+    template(x-if="operation === 'uploadFile'")
+      form(method='POST' :action='values.path' enctype='multipart/form-data' class='px-5 py-6')
         h2(class='mb-5 text-lg') New File
         div(class='mb-5')
           input(
@@ -68,6 +58,6 @@ div(
           )
           p(class='text-xs text-gray-400 mt-2') File size must be 5MB or less.
         div(class='flex justify-end gap-2')
-          button(type='button' @click='closeModal' class= btn) Cancel
+          button(type='button' @click='close' class= btn) Cancel
           button(type='submit' class= btn) Upload
 
