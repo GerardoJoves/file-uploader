@@ -7,7 +7,7 @@
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "tsx watch src/app.js & tailwindcss -i ./src/styles/tailwind.input.css -o ./public/css/tailwind.output.css --watch",
+    "dev": "tsx watch src/app.js & tailwindcss -i ./src/styles/tailwind.input.css -o ./public/css/tailwind.output.css --watch & webpack --watch",
     "type-check": "tsc --noEmit",
     "prepare": "simple-git-hooks"
   },
@@ -16,6 +16,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.9.0",
+    "@types/alpinejs": "^3.13.10",
     "@types/bcryptjs": "^2.4.6",
     "@types/eslint__js": "^8.42.3",
     "@types/express": "^4.17.21",
@@ -31,7 +32,8 @@
     "simple-git-hooks": "^2.11.1",
     "tsx": "^4.17.0",
     "typescript": "^5.5.4",
-    "typescript-eslint": "^8.2.0"
+    "typescript-eslint": "^8.2.0",
+    "webpack-cli": "^5.1.4"
   },
   "keywords": [],
   "author": "",
@@ -40,6 +42,7 @@
     "@prisma/client": "^5.20.0",
     "@quixo3/prisma-session-store": "^3.1.13",
     "@supabase/supabase-js": "^2.45.4",
+    "alpinejs": "^3.14.3",
     "base64-arraybuffer": "^1.0.2",
     "bcryptjs": "^2.4.3",
     "date-fns": "^4.1.0",
@@ -53,6 +56,7 @@
     "passport-local": "^1.0.0",
     "pug": "^3.0.3",
     "tailwindcss": "^3.4.14",
-    "uuid": "^10.0.0"
+    "uuid": "^10.0.0",
+    "webpack": "^5.95.0"
   }
 }
