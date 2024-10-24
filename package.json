@@ -7,7 +7,7 @@
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "tsx watch src/app.js & tailwindcss -i ./public/css/input.css -o ./public/css/output.css --watch",
+    "dev": "tsx watch src/app.js & tailwindcss -i ./src/styles/tailwind.input.css -o ./public/css/tailwind.output.css --watch",
     "type-check": "tsc --noEmit",
     "prepare": "simple-git-hooks"
   },
