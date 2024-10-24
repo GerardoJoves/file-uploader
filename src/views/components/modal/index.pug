@@ -5,7 +5,7 @@ mixin createRenameForm(action)
     h2(class='mb-5 text-lg')
       | #{ action === 'createFolder' ? 'New Folder' : 'Rename' }
     div(class='mb-5')
-      input(id='name' type="text" name='name' x-model='name' class='input-primary' required)
+      input(id='name' type="text" name='folderName' x-model='name' class='input-primary' required)
     div(class='flex justify-end gap-2')
       button(type='button' @click='closeModal' class= btn) Cancel
       button(type='submit' :disabled='() => !name' class= btn)
