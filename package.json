@@ -7,7 +7,10 @@
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "tsx watch src/app.js & tailwindcss -i ./src/styles/tailwind.input.css -o ./public/css/tailwind.output.css --watch & webpack --watch",
+    "dev": "concurrently --kill-others \"npm run tsx-watch\" \"npm run tailwind-watch\" \"npm run webpack-watch\"",
+    "tsx-watch": "tsx watch src/app.js",
+    "tailwind-watch": "tailwindcss -i ./src/styles/tailwind.input.css -o ./public/css/tailwind.output.css --watch",
+    "webpack-watch": "webpack --watch",
     "type-check": "tsc --noEmit",
     "prepare": "simple-git-hooks"
   },
@@ -26,6 +29,7 @@
     "@types/passport": "^1.0.16",
     "@types/passport-local": "^1.0.38",
     "@types/uuid": "^10.0.0",
+    "concurrently": "^9.0.1",
     "eslint": "^9.9.0",
     "prettier": "^3.3.3",
     "prisma": "^5.20.0",
