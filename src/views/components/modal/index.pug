@@ -47,7 +47,7 @@ div(
       +deleteForm('file')
 
     template(x-if="operation === 'uploadFile'")
-      form(method='POST' :action='values.path' enctype='multipart/form-data' class='px-5 py-6')
+      form(method='POST' :action='endpoint' enctype='multipart/form-data' class='px-5 py-6')
         h2(class='mb-5 text-lg') New File
         div(class='mb-5')
           input(
