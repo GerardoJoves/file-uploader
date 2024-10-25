@@ -11,7 +11,7 @@ div(x-data=`{ isOpen: false }` class='relative w-max ml-auto')
     x-transition
     x-show='isOpen'
     @click.outside='isOpen = false' 
-    class='absolute top-full right-0 z-10 rounded-lg shadow-lg w-44 bg-white'
+    class='absolute -top-1/2 right-full z-10 rounded-lg w-44 bg-white shadow-[rgba(14,30,37,0.12)_0px_2px_4px_0px,rgba(14,30,37,0.32)_0px_2px_16px_0px]'
   )
     ul(class='py-2 text-sm text-gray-700')
 
