@@ -1,5 +1,16 @@
 mixin form({ heading, submitText = 'Submit', cancelText = 'Cancel' })
-  form(method='POST' :action='endpoint', @submit='submitted = true' enctype!=attributes.enctype class='px-5 py-6')
+  form(
+    x-data='{ submitted: false }'
+    :action='endpoint'
+    @submit='submitted = true'
+    @click.outside='() => submitted || close()'
+    enctype!=attributes.enctype 
+    method='POST'
+    class='relative px-5 py-6'
+  )
+    div(x-show= 'submitted' x-transition class='bg-white p-4 h-full w-full absolute top-0 left-0 flex flex-col justify-center items-center rounded-lg')
+      div(class='loader')
+      p(class='mt-3 text-center text-gray-700 text-sm') Your request is being processed... Please wait.
     h2(class='mb-5 text-lg')= heading
     div(class='mb-5')
       block
@@ -19,10 +30,7 @@ div(
   class= 'fixed top-0 left-0 w-full h-full z-40 bg-gray-500/50 p-6 flex justify-center items-center'
 )
   // modal body
-  div(@click.outside='() => submitted || close()' class='relative bg-white max-w-[400px] max-h-full rounded-lg w-full')
-    div(x-show= 'submitted' x-transition class='bg-white p-4 h-full w-full absolute top-0 left-0 flex flex-col justify-center items-center rounded-lg')
-      div(class='loader')
-      p(class='mt-3 text-center text-gray-700 text-sm') Your request is being processed... Please wait.
+  div(class='bg-white max-w-[400px] max-h-full rounded-lg w-full')
 
     template(x-if="operation === 'createChildFolder'")
       +form({ heading: 'New Folder', submitText: 'Create' })
@@ -54,3 +62,26 @@ div(
             required 
             class='w-full text-gray-400 font-semibold text-sm bg-white border file:cursor-pointer cursor-pointer file:border-0 file:py-3 file:px-4 file:mr-4 file:bg-gray-100 file:hover:bg-gray-200 file:text-gray-500 rounded'
           )
+
+    template(x-if="operation === 'fileDetails'")
+      div(@click.outside='close' class='px-5 py-6 text-sm text-gray-700')
+        div(class='mb-4 flex items-center justify-between')
+          h2(class='text-gray-950 text-base') File details
+          button(type='button' @click='close' class='text-2xl')
+            include ../icons/x.html
+        div(class='mb-4')
+          div Type
+          div(x-text='values.fileType')
+        div(class='mb-4')
+          div Size
+          div(x-text='values.size')
+        div(class='mb-4')
+          div Owner
+          div(x-text='values.ownerDisplay')
+        div(class='mb-4')
+          div Modified
+          div(x-text='values.modified')
+        div(class='mb-4')
+          div Created
+          div(x-text='values.created')
+

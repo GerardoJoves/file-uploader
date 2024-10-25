@@ -16,8 +16,11 @@ div(x-data='{ isOpen: false }' class='relative')
       li(
         class='px-4 py-2 hover:bg-gray-100 flex items-center cursor-pointer'
         @click=`() => {
-          $store.modal.open('uploadFile', '${folderPath}/upload_file')
           isOpen = false;
+          $store.modal.open({
+            operation: 'uploadFile', 
+            endpoint: '${folderPath}/upload_file'
+          });
         }`
       )
         include ../icons/file_upload.html
@@ -25,8 +28,12 @@ div(x-data='{ isOpen: false }' class='relative')
       li(
         class='px-4 py-2 hover:bg-gray-100 flex items-center cursor-pointer'
         @click=`() => {
-          $store.modal.open('createChildFolder', '${folderPath}/create_folder', { name: 'Untitled Folder' })
           isOpen = false;
+          $store.modal.open({
+            operation: 'createChildFolder', 
+            endpoint: '${folderPath}/create_folder', 
+            values: { name: 'Untitled Folder' }
+          });
         }`
       )
         include ../icons/folder_plus.html

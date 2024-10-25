@@ -1,5 +1,7 @@
-- const renameOperation = type === 'FOLDER' ? 'renameFolder' : 'renameFile';
-- const deleteOperation = type === 'FOLDER' ? 'deleteFolder' : 'deleteFile';
+- const renameOperation = blockType === 'FOLDER' ? 'renameFolder' : 'renameFile';
+- const deleteOperation = blockType === 'FOLDER' ? 'deleteFolder' : 'deleteFile';
+- const blockData = { ownerDisplay, modified, size, created, fileType, name };
+- const stringifiedData = JSON.stringify(blockData);
 
 div(x-data=`{ isOpen: false }` class='relative w-max ml-auto')
   button(@click='isOpen = !isOpen' class='p-3 text-base')
@@ -12,25 +14,8 @@ div(x-data=`{ isOpen: false }` class='relative w-max ml-auto')
     class='absolute top-full right-0 z-10 rounded-lg shadow-lg w-44 bg-white'
   )
     ul(class='py-2 text-sm text-gray-700')
-      li(
-        @click=`() => {
-          $store.modal.open('${renameOperation}', '${path}/update', { name: '${name}' });
-          isOpen = false;
-        }`
-        class='px-4 py-2 hover:bg-gray-100 flex items-center cursor-pointer'
-      )
-        include ../icons/pencil_square.html
-        span(class='ml-2') Rename
-      li(
-        @click=`() => {
-          $store.modal.open('${deleteOperation}', '${path}/delete', { name: '${name}' });
-          isOpen = false;
-        }`
-        class='px-4 py-2 hover:bg-gray-100 flex items-center cursor-pointer'
-      )
-        include ../icons/trash.html
-        span(class='ml-2') Delete
-      if type === 'FILE'
+
+      if blockType === 'FILE'
         li(@click='isOpen = false'): a(
           href=`${path}/download`
           @click='isOpen = false'
@@ -38,3 +23,44 @@ div(x-data=`{ isOpen: false }` class='relative w-max ml-auto')
         )
           include ../icons/download.html
           span(class='ml-2') Download
+
+        li(
+          @click=`() => {
+            isOpen = false;
+            $store.modal.open({ 
+              operation: 'fileDetails', 
+              values: ${stringifiedData} 
+            });
+          }`
+          class='px-4 py-2 hover:bg-gray-100 flex items-center cursor-pointer'
+        )
+          include ../icons/information.html
+          span(class='ml-2') Details
+
+      li(
+        @click=`() => {
+          isOpen = false;
+          $store.modal.open({
+            operation: '${renameOperation}', 
+            endpoint: '${path}/update', 
+            values: { name: '${name}' } 
+          });
+        }`
+        class='px-4 py-2 hover:bg-gray-100 flex items-center cursor-pointer'
+      )
+        include ../icons/pencil_square.html
+        span(class='ml-2') Rename
+
+      li(
+        @click=`() => {
+          $store.modal.open({
+            operation: '${deleteOperation}', 
+            endpoint: '${path}/delete', 
+            values: { name: '${name}' } 
+          });
+          isOpen = false;
+        }`
+        class='px-4 py-2 hover:bg-gray-100 flex items-center cursor-pointer'
+      )
+        include ../icons/trash.html
+        span(class='ml-2') Delete

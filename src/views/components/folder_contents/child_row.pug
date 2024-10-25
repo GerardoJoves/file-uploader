@@ -1,20 +1,23 @@
-- let { id, owner, updatedAt, sizeInBytes: size, name, type } = child;
-- owner = owner.id === user.id ? 'me' : owner.username;
-- updatedAt = format(updatedAt, 'MMM d, yyyy');
-- size = size ? convertFileSize(size) : '-';
-- const path = (type === 'FOLDER' ? '/folders/' : '/files/') + id;
+- ownerDisplay = child.owner.id === user.id ? 'me' : child.owner.username;
+- modified = format(child.updatedAt, 'MMM d, yyyy');
+- size = child.sizeInBytes ? convertFileSize(child.sizeInBytes) : '-';
+- created = format(child.uploadTime, 'MMM d, yyy');
+- fileType = child.contentType;
+- blockType = child.type;
+- name = child.name
+- const path = (blockType === 'FOLDER' ? '/folders/' : '/files/') + child.id;
 
 tr(class='border-b border-gray-300 hover:bg-gray-100')
   td(class='px-4 py-3')
     div(class='flex items-center gap-3')
       div(class='text-xl')
-        if type === 'FOLDER'
+        if blockType === 'FOLDER'
           include ../icons/folder.html
         else
           include ../icons/file.html
       a(href= path)= name
-  td(class='text-gray-600 px-4 py-3'): div(class='w-max')= owner
-  td(class='text-gray-600 px-4 py-3'): div(class='w-max')= updatedAt 
+  td(class='text-gray-600 px-4 py-3'): div(class='w-max')= ownerDisplay
+  td(class='text-gray-600 px-4 py-3'): div(class='w-max')= modified
   td(class='text-gray-600 px-4 py-3'): div(class='w-max')= size
   td(class='text-gray-600 px-4')
     include ./options_dropdown.pug
