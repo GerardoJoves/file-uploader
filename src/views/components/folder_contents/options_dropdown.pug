@@ -30,3 +30,11 @@ div(x-data=`{ isOpen: false }` class='relative w-max ml-auto')
       )
         include ../icons/trash.html
         span(class='ml-2') Delete
+      if type === 'FILE'
+        li(@click='isOpen = false'): a(
+          href=`${path}/download`
+          @click='isOpen = false'
+          class='px-4 py-2 hover:bg-gray-100 flex items-center cursor-pointer'
+        )
+          include ../icons/download.html
+          span(class='ml-2') Download
