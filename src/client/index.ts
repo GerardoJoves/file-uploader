@@ -10,6 +10,7 @@ type ModalOperation =
   | '';
 
 interface ModalState {
+  submitted: false;
   isOpen: boolean;
   endpoint: string;
   operation: ModalOperation;
@@ -19,19 +20,21 @@ interface ModalState {
 const Alpine = alpinejs as unknown as Alpine;
 
 Alpine.store('modal', <ModalState>{
+  submitted: false,
   isOpen: false,
   endpoint: '',
   operation: '',
   values: {},
 
-  open(operation: ModalOperation, endpoint: string, values: object = {}) {
+  open(operation: ModalOperation, endpoint: string, values?: object) {
     this.isOpen = true;
     this.operation = operation;
     this.endpoint = endpoint;
-    this.values = values;
+    if (values) this.values = values;
   },
 
   close() {
+    this.submitted = false;
     this.isOpen = false;
     this.endpoint = '';
     this.operation = '';

@@ -1,4 +1,4 @@
-import { body, param } from 'express-validator';
+import { body } from 'express-validator';
 import prisma from '../lib/prisma.js';
 
 export type UserSignupData = {
@@ -43,9 +43,7 @@ const userSignupValidation = [
     .withMessage('Incorrect password confirmation'),
 ];
 
-const folderNameValidation = () =>
-  body('folderName').trim().exists().isLength({ min: 1, max: 255 });
+const blockNameValidaiton = () =>
+  body('name').trim().exists().isLength({ min: 1, max: 255 });
 
-const folderParamIdValidation = () => param('id').isInt().toInt().optional();
-
-export { userSignupValidation, folderNameValidation, folderParamIdValidation };
+export { userSignupValidation, blockNameValidaiton };

@@ -7,7 +7,7 @@ import convertFileSize from '../helpers/convertFileSize.js';
 import { updateDeletionTimeCascadeReturningStorePaths } from '@prisma/client/sql';
 
 import prisma from '../lib/prisma.js';
-import { folderNameValidation } from '../middleware/validation.js';
+import { blockNameValidaiton } from '../middleware/validation.js';
 import supabase from '../lib/supabase.js';
 
 const folderGet = asyncHandler(async (req: Request, res: Response) => {
@@ -42,7 +42,7 @@ const createFolderGet = (_req: Request, res: Response) => {
 };
 
 const createFolderPost = [
-  folderNameValidation(),
+  blockNameValidaiton(),
   asyncHandler(async (req: Request, res: Response) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -53,10 +53,10 @@ const createFolderPost = [
     }
     const user = req.user as Express.User;
     const parentFolder = req.parentFolder as Block;
-    const { folderName } = matchedData<{ folderName: string }>(req);
+    const { name } = matchedData<{ name: string }>(req);
     await prisma.block.create({
       data: {
-        name: folderName,
+        name: name,
         type: 'FOLDER',
         ownerId: user.id,
         parentFolderId: parentFolder.id,
@@ -80,7 +80,7 @@ const updateFolderGet = asyncHandler(async (req: Request, res: Response) => {
 });
 
 const updateFolderPost = [
-  folderNameValidation(),
+  blockNameValidaiton(),
   asyncHandler(async (req: Request, res: Response) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -91,7 +91,7 @@ const updateFolderPost = [
     }
     const user = req.user as Express.User;
     const folderId = parseInt(req.params.id);
-    const { folderName } = matchedData<{ folderName: string }>(req);
+    const { name } = matchedData<{ name: string }>(req);
     if (isNaN(folderId)) throw new Error('400');
     const updatedFolder = await prisma.block.update({
       where: {
@@ -100,7 +100,7 @@ const updateFolderPost = [
         type: 'FOLDER',
         deletionTime: null,
       },
-      data: { name: folderName },
+      data: { name: name },
       include: { parentFolder: true },
     });
     res.redirect(updatedFolder ? `/folders/${updatedFolder.id}` : '/home');
