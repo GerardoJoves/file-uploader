@@ -6,8 +6,8 @@ nav(class='flex justify-between py-6 sticky top-0 z-20 bg-white')
       - const parentPath = parent.type === 'ROOT' ? '/home' : `/folders/${parent.id}`;
       a(
         href= parentPath
-        class='text-gray-700 hover:underline underline-offset-4'
+        class='text-gray-700 hover:underline underline-offset-4 whitespace-nowrap truncate max-w-[30vw]'
       )= parent.type === 'ROOT' ? 'Home' : parent.name
       span(class='mx-2 text-gray-700')
         include ../icons/chevron_right.html
-    span= folder.type === 'ROOT' ? 'Home' : folder.name
+    span(class='whitespace-nowrap truncate max-w-[30vw]')= folder.type === 'ROOT' ? 'Home' : folder.name
