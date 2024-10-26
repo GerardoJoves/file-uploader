@@ -6,6 +6,13 @@
   display: none !important;
 }
 
+@media (min-width: 640px) {
+  /* Prevent sidebar hiding before Alpine loads on sm screen */
+  aside[x-cloak] {
+    display: block !important;
+  }
+}
+
 @layer components {
   .loader {
     @apply border-4 border-gray-700 border-l-transparent rounded-[50%] w-8 h-8 animate-spin;
