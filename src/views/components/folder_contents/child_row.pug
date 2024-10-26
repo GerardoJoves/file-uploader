@@ -8,16 +8,16 @@
 - const path = (blockType === 'FOLDER' ? '/folders/' : '/files/') + child.id;
 
 tr(class='border-b border-gray-300 hover:bg-gray-100')
-  td(class='px-4 py-3')
-    div(class='flex items-center gap-3')
-      div(class='text-xl')
-        if blockType === 'FOLDER'
-          include ../icons/folder.html
-        else
-          include ../icons/file.html
-      a(href= path)= name
-  td(class='text-gray-600 px-4 py-3'): div(class='w-max')= ownerDisplay
-  td(class='text-gray-600 px-4 py-3'): div(class='w-max')= modified
-  td(class='text-gray-600 px-4 py-3'): div(class='w-max')= size
-  td(class='text-gray-600 px-4')
-    include ./options_dropdown.pug
+  td
+    if blockType === 'FOLDER'
+      a(href= path class='px-4 py-3 flex items-center gap-3 w-full h-full max-w-[50vw] sm:max-w-[30vw] 2xl:max-w-[40vw]')
+        span(class='text-xl'): include ../icons/folder.html
+        span(class='whitespace-nowrap truncate')= name
+    else
+      div(class='px-4 py-3 flex items-center gap-3 w-full h-full max-w-[50vw] sm:max-w-[30vw] xl:max-w-[40vw]')
+        span(class='text-xl'): include ../icons/folder.html
+        span(class='whitespace-nowrap truncate')= name
+  td: div(class='text-gray-600 px-4 py-3 hidden lg:block')= ownerDisplay
+  td: div(class='text-gray-600 whitespace-nowrap px-4 py-3 hidden xxs:block sm:hidden md:block')= modified
+  td: div(class='text-gray-600 whitespace-nowrap px-4 py-3 hidden xs:block sm:hidden lg:block')= size
+  td: div(class='text-gray-600 px-4'): include ./options_dropdown.pug

@@ -44,14 +44,14 @@ div(
       +form({ heading: 'Delete Folder', submitText: 'Delete' })
         p(class='text-gray-700 text-sm') 
           | Are you sure you want to delete the folder "
-          span(x-text='values.name')
+          span(x-text='values.name' class='break-words')
           | "? All content within the folder will also be deleted.
 
     template(x-if="operation === 'deleteFile'")
       +form({ heading: 'Delete File', submitText: 'Delete' })
         p(class='text-gray-700 text-sm')
           | Are you sure you want to delete the file "
-          span(x-text='values.name')
+          span(x-text='values.name' class='break-words')
           | "?
 
     template(x-if="operation === 'uploadFile'")
