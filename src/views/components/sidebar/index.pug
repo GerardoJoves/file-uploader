@@ -1,7 +1,9 @@
 div(class='h-full px-4 py-5 overflow-y-auto')
   div(class='mb-6 flex items-center')
     span(class='text-3xl'): include ../icons/archive.html
-    span(class='ml-3 text-xl') File_Uploader
+    span(class='ml-3 text-xl flex-grow') File_Uploader
+    button(@click='isSidebarActive = false' class='rounded-full hover:bg-gray-200 p-1 text-xl sm:hidden text-gray-700')
+      include ../icons/x.html
   div(class='mb-6')
     include ./new_dropdown.pug
   nav: ul

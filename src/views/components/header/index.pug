@@ -1,4 +1,6 @@
-div(class='flex items-center gap-4 p-4 sm:pl-0')
+div(class='flex items-center gap-2 px-2 py-4 sm:py-4 sm:pl-0')
+  button(@click='$nextTick(() => isSidebarActive = true)' type='button' class='p-2 text-xl sm:hidden')
+    include ../icons/triple_bar.html
   div(class='flex-grow')
     include ./search_bar.pug
   div(class='')

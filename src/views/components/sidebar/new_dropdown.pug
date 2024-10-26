@@ -17,6 +17,7 @@ div(x-data='{ isOpen: false }' class='relative')
         class='px-4 py-2 hover:bg-gray-100 flex items-center cursor-pointer'
         @click=`() => {
           isOpen = false;
+          isSidebarActive = false;
           $store.modal.open({
             operation: 'uploadFile', 
             endpoint: '${folderPath}/upload_file'
@@ -29,6 +30,7 @@ div(x-data='{ isOpen: false }' class='relative')
         class='px-4 py-2 hover:bg-gray-100 flex items-center cursor-pointer'
         @click=`() => {
           isOpen = false;
+          isSidebarActive = false;
           $store.modal.open({
             operation: 'createChildFolder', 
             endpoint: '${folderPath}/create_folder', 

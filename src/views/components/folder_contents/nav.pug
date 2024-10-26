@@ -1,6 +1,6 @@
 - const parent = folder.parentFolder;
 
-nav(class='flex justify-between py-6 sticky top-0 z-20 bg-white')
+nav(class='flex justify-between py-6 sticky top-0 z-10 bg-white')
   div(class='text-lg flex items-center')
     if parent
       - const parentPath = parent.type === 'ROOT' ? '/home' : `/folders/${parent.id}`;

@@ -1,4 +1,4 @@
-div(x-data='{ isOpen: false }' class='relative py-2')
+div(x-data='{ isOpen: false }' class='relative p-2')
   button(@click='isOpen = !isOpen' class='flex items-center relative hover:underline underline-offset-4')
     span(class='text-2xl ms:text-xl'): include ../icons/person.html
     span(class='ml-2 whitespace-nowrap truncate max-w-48 hidden lg:block')= user.username
