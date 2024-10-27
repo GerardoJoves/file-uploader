@@ -3,15 +3,33 @@
 - const blockData = { ownerDisplay, modified, size, created, fileType, name };
 - const stringifiedData = JSON.stringify(blockData);
 
-div(x-data=`{ isOpen: false }` class='relative w-max ml-auto')
-  button(@click='isOpen = !isOpen' class='p-3 text-base')
+div(
+  x-data=`{ isOpen: false, position: '' }` 
+  @click.outside='isOpen = false'
+  class='relative w-max ml-auto'
+)
+  button(
+    @click=`() => {
+      isOpen = !isOpen;
+      if (!isOpen) return;
+      const rect = $event.target.getBoundingClientRect();
+      const windowHeight = window.innerHeight;
+      $refs.dropdown.style.display = 'block';
+      const dropdownHeight = $refs.dropdown.offsetHeight;
+      $refs.dropdown.style.display = 'none';
+      if (rect.bottom + dropdownHeight > windowHeight) position = 'top';
+      else position = 'bottom';
+    }`  
+    class='p-3 text-base'
+  )
     include ../icons/three_dots.html
   div(
+    x-ref='dropdown'
     x-cloak
     x-transition
     x-show='isOpen'
-    @click.outside='isOpen = false' 
-    class='absolute -top-1/2 right-full z-0 rounded-lg w-44 bg-white shadow-[rgba(14,30,37,0.12)_0px_2px_4px_0px,rgba(14,30,37,0.32)_0px_2px_16px_0px]'
+    :class="position === 'top' ? 'bottom-1/2' : 'top-1/2'"
+    class='absolute right-full z-10 rounded-lg w-44 bg-white shadow-[rgba(14,30,37,0.12)_0px_2px_4px_0px,rgba(14,30,37,0.32)_0px_2px_16px_0px]'
   )
     ul(class='py-2 text-sm text-gray-700')
 

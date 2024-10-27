@@ -613,6 +613,14 @@ video {
   pointer-events: none;
 }
 
+.visible {
+  visibility: visible;
+}
+
+.invisible {
+  visibility: hidden;
+}
+
 .fixed {
   position: fixed;
 }
@@ -651,6 +659,14 @@ video {
 
 .top-full {
   top: 100%;
+}
+
+.top-1\/2 {
+  top: 50%;
+}
+
+.bottom-1\/2 {
+  bottom: 50%;
 }
 
 .z-0 {
@@ -988,6 +1004,10 @@ video {
   padding-top: 1rem;
 }
 
+.pb-3 {
+  padding-bottom: 0.75rem;
+}
+
 .text-left {
   text-align: left;
 }
@@ -1099,7 +1119,9 @@ video {
   display: none !important;
 }
 
-@media (min-width: 640px /* sm */) {
+@media (min-width: 640px) {
+  /* Prevent sidebar hiding before Alpine loads on sm screen */
+
   aside[x-cloak] {
     display: block !important;
   }
