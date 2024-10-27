@@ -30,7 +30,7 @@ div(
   class= 'fixed top-0 left-0 w-full h-full z-40 bg-gray-500/50 p-6 flex justify-center items-center'
 )
   // modal body
-  div(class='bg-white max-w-[400px] max-h-full rounded-lg w-full')
+  div(class='relative bg-white max-w-[400px] max-h-full rounded-lg w-full overflow-hidden grid grid-rows-1 grid-cols-1')
 
     template(x-if="operation === 'createChildFolder'")
       +form({ heading: 'New Folder', submitText: 'Create' })
@@ -64,11 +64,10 @@ div(
           )
 
     template(x-if="operation === 'fileDetails'")
-      div(@click.outside='close' class='px-5 py-6 text-sm text-gray-700')
-        div(class='mb-4 flex items-center justify-between')
-          h2(class='text-gray-950 text-base') File details
-          button(type='button' @click='close' class='text-2xl')
-            include ../icons/x.html
+      div(@click.outside='close' class='w-full h-full px-5 py-6 text-sm text-gray-700 overflow-y-auto')
+        button(type='button' @click='close' class='text-2xl absolute top-6 right-5 rounded-full hover:bg-gray-100')
+          include ../icons/x.html
+        h2(class='text-gray-950 text-base mb-4') File details
         div(class='mb-4')
           div Type
           div(x-text='values.fileType')
@@ -81,7 +80,7 @@ div(
         div(class='mb-4')
           div Modified
           div(x-text='values.modified')
-        div(class='mb-4')
+        div
           div Created
           div(x-text='values.created')
 
