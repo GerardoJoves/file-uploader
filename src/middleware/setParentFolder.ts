@@ -6,11 +6,9 @@ import prisma from '../lib/prisma.js';
 const setParentFolderById = asyncHandler(
   async (req: Request, _res: Response, next: NextFunction) => {
     const user = req.user as Express.User;
-    const folderId = parseInt(req.params.id);
-    if (isNaN(folderId)) throw new Error('400');
     const folder = await prisma.block.findUnique({
       where: {
-        id: folderId,
+        id: req.params.id,
         ownerId: user.id,
         type: 'FOLDER',
         deletionTime: null,

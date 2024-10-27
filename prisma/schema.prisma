@@ -16,7 +16,7 @@ datasource db {
 }
 
 model User {
-  id       Int     @id @default(autoincrement())
+  id       String  @id @default(uuid())
   username String  @unique @db.VarChar(25)
   password String
   blocks   Block[] @relation(name: "userCreatedBlocks")
@@ -30,13 +30,13 @@ model Session {
 }
 
 model Block {
-  id             Int       @id @default(autoincrement())
+  id             String    @id @default(uuid())
   owner          User      @relation(name: "userCreatedBlocks", fields: [ownerId], references: [id])
-  ownerId        Int
+  ownerId        String
   name           String
   type           BlockType
   parentFolder   Block?    @relation(name: "parentChildren", fields: [parentFolderId], references: [id], onDelete: Cascade)
-  parentFolderId Int?
+  parentFolderId String?
   children       Block[]   @relation(name: "parentChildren")
   uploadTime     DateTime?
   deletionTime   DateTime?

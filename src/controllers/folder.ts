@@ -12,7 +12,7 @@ import supabase from '../lib/supabase.js';
 
 const folderGet = asyncHandler(async (req: Request, res: Response) => {
   const user = req.user as Express.User;
-  const id = req.params.id ? parseInt(req.params.id) : null;
+  const id = req.params.id || null;
   const where: Prisma.BlockWhereInput =
     id === null
       ? { type: 'ROOT', ownerId: user.id }
@@ -71,10 +71,8 @@ const createFolderPost = [
 
 const updateFolderGet = asyncHandler(async (req: Request, res: Response) => {
   const user = req.user as Express.User;
-  const folderId = parseInt(req.params.id);
-  if (isNaN(folderId)) throw new Error('400');
   const folder = await prisma.block.findUnique({
-    where: { id: folderId, type: 'FOLDER', ownerId: user.id },
+    where: { id: req.params.id, type: 'FOLDER', ownerId: user.id },
   });
   res.render('pages/create_folder_form', { title: 'Update Folder', folder });
 });
@@ -90,12 +88,10 @@ const updateFolderPost = [
       });
     }
     const user = req.user as Express.User;
-    const folderId = parseInt(req.params.id);
     const { name } = matchedData<{ name: string }>(req);
-    if (isNaN(folderId)) throw new Error('400');
     const updatedFolder = await prisma.block.update({
       where: {
-        id: folderId,
+        id: req.params.id,
         ownerId: user.id,
         type: 'FOLDER',
         deletionTime: null,
@@ -109,10 +105,8 @@ const updateFolderPost = [
 
 const deleteFolderGet = asyncHandler(async (req: Request, res: Response) => {
   const user = req.user as Express.User;
-  const folderId = parseInt(req.params.id);
-  if (isNaN(folderId)) throw new Error('400');
   const folder = await prisma.block.findUnique({
-    where: { id: folderId, type: 'FOLDER', ownerId: user.id },
+    where: { id: req.params.id, type: 'FOLDER', ownerId: user.id },
   });
   res.render('pages/delete_folder_confirm', {
     title: 'Update Folder',
@@ -122,10 +116,8 @@ const deleteFolderGet = asyncHandler(async (req: Request, res: Response) => {
 
 const deleteFolderPost = asyncHandler(async (req: Request, res: Response) => {
   const user = req.user as Express.User;
-  const folderId = parseInt(req.params.id);
-  if (isNaN(folderId)) throw new Error('400');
   const folder = await prisma.block.findUnique({
-    where: { id: folderId, type: 'FOLDER', ownerId: user.id },
+    where: { id: req.params.id, type: 'FOLDER', ownerId: user.id },
     include: { parentFolder: true },
   });
   if (!folder) return res.redirect('/home');

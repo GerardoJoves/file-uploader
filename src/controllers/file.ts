@@ -10,10 +10,13 @@ import { Block } from '@prisma/client';
 
 const fileGet = asyncHandler(async (req: Request, res: Response) => {
   const user = req.user as Express.User;
-  const id = parseInt(req.params.id);
-  if (isNaN(id)) throw new Error('400');
   const file = await prisma.block.findUnique({
-    where: { id: id, ownerId: user.id, type: 'FILE', deletionTime: null },
+    where: {
+      id: req.params.id,
+      ownerId: user.id,
+      type: 'FILE',
+      deletionTime: null,
+    },
     include: { parentFolder: true },
   });
   if (!file) throw new Error('404');
@@ -66,10 +69,13 @@ const uploadFilePost = [
 
 const deleteFilePost = asyncHandler(async (req: Request, res: Response) => {
   const user = req.user as Express.User;
-  const fileId = parseInt(req.params.id);
-  if (isNaN(fileId)) throw new Error('400');
   const file = await prisma.block.update({
-    where: { id: fileId, type: 'FILE', ownerId: user.id, deletionTime: null },
+    where: {
+      id: req.params.id,
+      type: 'FILE',
+      ownerId: user.id,
+      deletionTime: null,
+    },
     data: { deletionTime: new Date() },
     include: { parentFolder: true },
   });
@@ -93,10 +99,8 @@ const deleteFilePost = asyncHandler(async (req: Request, res: Response) => {
 
 const downloadFile = asyncHandler(async (req: Request, res: Response) => {
   const user = req.user as Express.User;
-  const fileId = parseInt(req.params.id);
-  if (isNaN(fileId)) throw new Error('400');
   const file = await prisma.block.findUnique({
-    where: { id: fileId, type: 'FILE', ownerId: user.id },
+    where: { id: req.params.id, type: 'FILE', ownerId: user.id },
   });
   if (!file) throw new Error('404');
   const storeResult = await supabase.storage
