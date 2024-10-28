@@ -1,22 +1,22 @@
 import { Request, Response } from 'express';
 import asyncHandler from 'express-async-handler';
 import { matchedData, validationResult } from 'express-validator';
-import { Block, Prisma } from '@prisma/client';
 import { format } from 'date-fns';
-import convertFileSize from '../helpers/convertFileSize.js';
-import { updateDeletionTimeCascadeReturningStorePaths } from '@prisma/client/sql';
+import { Block, Prisma } from '@prisma/client';
+import { markAsDeletedCascade } from '@prisma/client/sql';
 
+import convertFileSize from '../helpers/convertFileSize.js';
 import prisma from '../lib/prisma.js';
 import { blockNameValidation } from '../middleware/validation.js';
 import supabase from '../lib/supabase.js';
 
 const folderGet = asyncHandler(async (req: Request, res: Response) => {
   const user = req.user as Express.User;
-  const id = req.params.id || null;
-  const where: Prisma.BlockWhereInput =
-    id === null
-      ? { type: 'ROOT', ownerId: user.id }
-      : { type: 'FOLDER', id: id, ownerId: user.id, deletionTime: null };
+  const id = req.params.id;
+
+  const where: Prisma.BlockWhereInput = id
+    ? { type: 'FOLDER', id: id, ownerId: user.id, deletionTime: null }
+    : { type: 'ROOT', ownerId: user.id }; // If no id is provided retrieve user's ROOT
   const include: Prisma.BlockInclude = {
     children: {
       where: { deletionTime: null },
@@ -25,6 +25,7 @@ const folderGet = asyncHandler(async (req: Request, res: Response) => {
     },
     parentFolder: true,
   };
+
   const folder = await prisma.block.findFirst({ where, include });
   if (!folder) throw new Error('404');
   res.render('pages/folder', {
@@ -122,14 +123,19 @@ const deleteFolderPost = asyncHandler(async (req: Request, res: Response) => {
   });
   if (!folder) return res.redirect('/home');
 
-  const deletedFiles = await prisma.$queryRawTyped(
-    updateDeletionTimeCascadeReturningStorePaths(folder.id, new Date()),
+  const deletedBlocks = await prisma.$queryRawTyped(
+    markAsDeletedCascade(folder.id, new Date()),
   );
-  const storePaths: string[] = [];
-  deletedFiles.forEach(({ storePath: p }) => p && storePaths.push(p));
-  let storeError = null;
-  if (storePaths.length > 0) {
-    const { error } = await supabase.storage.from('files').remove(storePaths);
+  const deletedFileIds: string[] = [];
+  deletedBlocks.forEach((block) => {
+    if (block.type === 'FILE') deletedFileIds.push(block.id);
+  });
+
+  let storeError;
+  if (deletedFileIds.length > 0) {
+    const { error } = await supabase.storage
+      .from('files')
+      .remove(deletedFileIds);
     storeError = error;
   }
   if (!storeError) await prisma.block.delete({ where: { id: folder.id } });
