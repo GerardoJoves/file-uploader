@@ -1,10 +1,10 @@
-- ownerDisplay = child.owner.id === user.id ? 'me' : child.owner.username;
-- modified = format(child.updatedAt, 'MMM d, yyyy');
-- size = child.sizeInBytes ? convertFileSize(child.sizeInBytes) : '-';
-- created = format(child.uploadTime, 'MMM d, yyy');
-- contentType = child.contentType;
-- blockType = child.type;
-- name = child.name
+- const ownerDisplay = child.owner.id === user.id ? 'me' : child.owner.username;
+- const modified = format(child.updatedAt, 'MMM d, yyyy');
+- const size = child.sizeInBytes ? convertFileSize(child.sizeInBytes) : '-';
+- const created = format(child.uploadTime, 'MMM d, yyy');
+- const contentType = child.contentType;
+- const blockType = child.type;
+- const name = child.name
 - const path = (blockType === 'FOLDER' ? '/folders/' : '/files/') + child.id;
 
 tr(class='border-b border-gray-300 hover:bg-gray-100')
