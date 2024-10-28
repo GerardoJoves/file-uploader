@@ -7,7 +7,7 @@ const router = Router();
 
 router.use(isAuthenticated);
 
-router.get('/:id/download', fileController.downloadFile);
+router.get('/:id/download', fileController.downloadFileGet);
 router.post('/:id/delete', fileController.deleteFilePost);
 router.post('/:id/update', fileController.updateFilePost);
 router.get('/:id', fileController.fileGet);

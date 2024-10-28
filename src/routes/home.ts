@@ -11,14 +11,16 @@ router.use(isAuthenticated);
 
 router.get('/', folderController.folderGet);
 
-router
-  .route('/upload_file')
-  .get(fileController.uploadFileGet)
-  .post(setParentFolderUserRoot, fileController.uploadFilePost);
+router.post(
+  '/upload_file',
+  setParentFolderUserRoot,
+  fileController.uploadFilePost,
+);
 
-router
-  .route('/create_folder')
-  .get(folderController.createFolderGet)
-  .post(setParentFolderUserRoot, folderController.createFolderPost);
+router.post(
+  '/create_folder',
+  setParentFolderUserRoot,
+  folderController.createFolderPost,
+);
 
 export default router;

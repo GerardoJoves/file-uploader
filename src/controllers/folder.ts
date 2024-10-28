@@ -38,10 +38,6 @@ const folderGet = asyncHandler(async (req: Request, res: Response) => {
   });
 });
 
-const createFolderGet = (_req: Request, res: Response) => {
-  res.render('pages/create_folder_form', { title: 'Create Folder' });
-};
-
 const createFolderPost = [
   blockNameValidation(),
   asyncHandler(async (req: Request, res: Response) => {
@@ -70,14 +66,6 @@ const createFolderPost = [
   }),
 ];
 
-const updateFolderGet = asyncHandler(async (req: Request, res: Response) => {
-  const user = req.user as Express.User;
-  const folder = await prisma.block.findUnique({
-    where: { id: req.params.id, type: 'FOLDER', ownerId: user.id },
-  });
-  res.render('pages/create_folder_form', { title: 'Update Folder', folder });
-});
-
 const updateFolderPost = [
   blockNameValidation(),
   asyncHandler(async (req: Request, res: Response) => {
@@ -103,17 +91,6 @@ const updateFolderPost = [
     res.redirect(updatedFolder ? `/folders/${updatedFolder.id}` : '/home');
   }),
 ];
-
-const deleteFolderGet = asyncHandler(async (req: Request, res: Response) => {
-  const user = req.user as Express.User;
-  const folder = await prisma.block.findUnique({
-    where: { id: req.params.id, type: 'FOLDER', ownerId: user.id },
-  });
-  res.render('pages/delete_folder_confirm', {
-    title: 'Update Folder',
-    folder,
-  });
-});
 
 const deleteFolderPost = asyncHandler(async (req: Request, res: Response) => {
   const user = req.user as Express.User;
@@ -149,10 +126,7 @@ const deleteFolderPost = asyncHandler(async (req: Request, res: Response) => {
 
 export default {
   folderGet,
-  createFolderGet,
   createFolderPost,
-  updateFolderGet,
   updateFolderPost,
-  deleteFolderGet,
   deleteFolderPost,
 };

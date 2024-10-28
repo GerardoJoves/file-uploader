@@ -21,12 +21,8 @@ const fileGet = asyncHandler(async (req: Request, res: Response) => {
     include: { parentFolder: true },
   });
   if (!file) throw new Error('404');
-  res.render('pages/file', { title: file.name, file });
+  res.json(file);
 });
-
-const uploadFileGet = (_req: Request, res: Response) => {
-  res.render('pages/upload_file_form', { title: 'Uplaod File' });
-};
 
 const uploadFilePost = [
   upload.single('uploaded_file'),
@@ -94,7 +90,7 @@ const deleteFilePost = asyncHandler(async (req: Request, res: Response) => {
   );
 });
 
-const downloadFile = asyncHandler(async (req: Request, res: Response) => {
+const downloadFileGet = asyncHandler(async (req: Request, res: Response) => {
   const user = req.user as Express.User;
   const file = await prisma.block.findUnique({
     where: {
@@ -138,9 +134,8 @@ const updateFilePost = [
 
 export default {
   fileGet,
-  uploadFileGet,
   uploadFilePost,
   deleteFilePost,
-  downloadFile,
+  downloadFileGet,
   updateFilePost,
 };
