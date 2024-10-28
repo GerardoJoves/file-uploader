@@ -1,7 +1,6 @@
 import { Request, Response } from 'express';
 import asyncHandler from 'express-async-handler';
 import { decode } from 'base64-arraybuffer';
-import { v4 as uuidv4 } from 'uuid';
 
 import prisma from '../lib/prisma.js';
 import supabase from '../lib/supabase.js';
@@ -35,11 +34,9 @@ const uploadFilePost = [
     const file = req.file;
     const parentFolder = req.parentFolder as Block;
     const fileBase64 = decode(file.buffer.toString('base64'));
-    const storePath = uuidv4();
     const record = await prisma.block.create({
       data: {
         parentFolderId: parentFolder.id,
-        storePath,
         ownerId: user.id,
         name: file.originalname,
         contentType: file.mimetype,
@@ -49,7 +46,7 @@ const uploadFilePost = [
     });
     const storeUpload = await supabase.storage
       .from('files')
-      .upload(storePath, fileBase64, {
+      .upload(record.id, fileBase64, {
         contentType: file.mimetype,
       });
     if (storeUpload.error) {
@@ -79,9 +76,7 @@ const deleteFilePost = asyncHandler(async (req: Request, res: Response) => {
     data: { deletionTime: new Date() },
     include: { parentFolder: true },
   });
-  const storeRemoval = await supabase.storage
-    .from('files')
-    .remove([file.storePath as string]);
+  const storeRemoval = await supabase.storage.from('files').remove([file.id]);
   if (storeRemoval.error) {
     await prisma.block.update({
       where: { id: file.id },
@@ -100,13 +95,18 @@ const deleteFilePost = asyncHandler(async (req: Request, res: Response) => {
 const downloadFile = asyncHandler(async (req: Request, res: Response) => {
   const user = req.user as Express.User;
   const file = await prisma.block.findUnique({
-    where: { id: req.params.id, type: 'FILE', ownerId: user.id },
+    where: {
+      id: req.params.id,
+      type: 'FILE',
+      ownerId: user.id,
+      deletionTime: null,
+    },
   });
   if (!file) throw new Error('404');
   const storeResult = await supabase.storage
     .from('files')
-    .createSignedUrl(file.storePath as string, 60, {
-      download: true,
+    .createSignedUrl(file.id, 60, {
+      download: file.name,
     });
   if (storeResult.error) throw new Error('500');
   res.redirect(storeResult.data.signedUrl);

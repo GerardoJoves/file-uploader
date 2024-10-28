@@ -42,7 +42,6 @@ model Block {
   deletionTime   DateTime?
   updatedAt      DateTime  @updatedAt
   contentType    String?
-  storePath      String?
   sizeInBytes    Int?
 
   @@index([ownerId, type, name])
