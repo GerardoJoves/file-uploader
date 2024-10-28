@@ -1,11 +1,13 @@
 import { Request, Response } from 'express';
 import asyncHandler from 'express-async-handler';
 import { decode } from 'base64-arraybuffer';
+import { validationResult, matchedData } from 'express-validator';
 
 import prisma from '../lib/prisma.js';
 import supabase from '../lib/supabase.js';
 import upload from '../lib/multer.js';
 import { Block } from '@prisma/client';
+import { blockNameValidation } from '../middleware/validation.js';
 
 const fileGet = asyncHandler(async (req: Request, res: Response) => {
   const user = req.user as Express.User;
@@ -112,10 +114,33 @@ const downloadFile = asyncHandler(async (req: Request, res: Response) => {
   res.redirect(storeResult.data.signedUrl);
 });
 
+const updateFilePost = [
+  blockNameValidation(),
+  asyncHandler(async (req: Request, res: Response) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) throw new Error('400');
+    const user = req.user as Express.User;
+    const { name } = matchedData<{ name: string }>(req);
+    const updatedFile = await prisma.block.update({
+      where: {
+        id: req.params.id,
+        ownerId: user.id,
+        type: 'FILE',
+        deletionTime: null,
+      },
+      data: { name: name },
+      include: { parentFolder: true },
+    });
+    const parent = updatedFile.parentFolder;
+    res.redirect(parent?.type === 'ROOT' ? '/home' : `/folders/${parent?.id}`);
+  }),
+];
+
 export default {
   fileGet,
   uploadFileGet,
   uploadFilePost,
   deleteFilePost,
   downloadFile,
+  updateFilePost,
 };

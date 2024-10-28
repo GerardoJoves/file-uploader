@@ -9,6 +9,7 @@ router.use(isAuthenticated);
 
 router.get('/:id/download', fileController.downloadFile);
 router.post('/:id/delete', fileController.deleteFilePost);
+router.post('/:id/update', fileController.updateFilePost);
 router.get('/:id', fileController.fileGet);
 
 export default router;
