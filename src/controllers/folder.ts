@@ -7,7 +7,7 @@ import convertFileSize from '../helpers/convertFileSize.js';
 import { updateDeletionTimeCascadeReturningStorePaths } from '@prisma/client/sql';
 
 import prisma from '../lib/prisma.js';
-import { blockNameValidaiton } from '../middleware/validation.js';
+import { blockNameValidation } from '../middleware/validation.js';
 import supabase from '../lib/supabase.js';
 
 const folderGet = asyncHandler(async (req: Request, res: Response) => {
@@ -42,7 +42,7 @@ const createFolderGet = (_req: Request, res: Response) => {
 };
 
 const createFolderPost = [
-  blockNameValidaiton(),
+  blockNameValidation(),
   asyncHandler(async (req: Request, res: Response) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -78,7 +78,7 @@ const updateFolderGet = asyncHandler(async (req: Request, res: Response) => {
 });
 
 const updateFolderPost = [
-  blockNameValidaiton(),
+  blockNameValidation(),
   asyncHandler(async (req: Request, res: Response) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {

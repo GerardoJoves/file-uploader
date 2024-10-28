@@ -43,7 +43,7 @@ const userSignupValidation = [
     .withMessage('Incorrect password confirmation'),
 ];
 
-const blockNameValidaiton = () =>
+const blockNameValidation = () =>
   body('name').trim().exists().isLength({ min: 1, max: 255 });
 
-export { userSignupValidation, blockNameValidaiton };
+export { userSignupValidation, blockNameValidation };
