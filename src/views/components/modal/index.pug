@@ -104,15 +104,15 @@ div(
           include ../icons/information.html
           span(class='ml-1') Max file size: 5MB.
 
-    template(x-if="operation === 'fileDetails'")
+    template(x-if="operation === 'details'")
       div(@click.outside='close' class='w-full h-full px-5 py-6 text-sm text-gray-700 overflow-y-auto')
         button(type='button' @click='close' class='text-2xl absolute top-6 right-5 rounded-full hover:bg-gray-100')
           include ../icons/x.html
-        h2(class='text-gray-950 text-base mb-4') File details
+        h2(class='text-gray-950 text-base mb-4') Details
         div(class='mb-4')
           div Type
-          div(x-text='values.fileType')
-        div(class='mb-4')
+          div(x-text="values.contentType || 'Folder'")
+        div(x-show="values.blockType === 'FILE'" class='mb-4')
           div Size
           div(x-text='values.size')
         div(class='mb-4')

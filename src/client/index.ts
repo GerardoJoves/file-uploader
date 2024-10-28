@@ -7,7 +7,7 @@ type ModalOperation =
   | 'renameFile'
   | 'deleteFolder'
   | 'deleteFile'
-  | 'fileDetails'
+  | 'details'
   | '';
 
 interface ModalState {

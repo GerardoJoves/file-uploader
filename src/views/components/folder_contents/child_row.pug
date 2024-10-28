@@ -2,7 +2,7 @@
 - modified = format(child.updatedAt, 'MMM d, yyyy');
 - size = child.sizeInBytes ? convertFileSize(child.sizeInBytes) : '-';
 - created = format(child.uploadTime, 'MMM d, yyy');
-- fileType = child.contentType;
+- contentType = child.contentType;
 - blockType = child.type;
 - name = child.name
 - const path = (blockType === 'FOLDER' ? '/folders/' : '/files/') + child.id;

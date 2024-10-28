@@ -1,6 +1,6 @@
 - const renameOperation = blockType === 'FOLDER' ? 'renameFolder' : 'renameFile';
 - const deleteOperation = blockType === 'FOLDER' ? 'deleteFolder' : 'deleteFile';
-- const blockData = { ownerDisplay, modified, size, created, fileType, name };
+- const blockData = { ownerDisplay, modified, size, created, contentType, name, blockType };
 - const stringifiedData = JSON.stringify(blockData);
 
 div(
@@ -42,18 +42,18 @@ div(
           include ../icons/download.html
           span(class='ml-2') Download
 
-        li(
-          @click=`() => {
-            isOpen = false;
-            $store.modal.open({ 
-              operation: 'fileDetails', 
-              values: ${stringifiedData} 
-            });
-          }`
-          class='px-4 py-2 hover:bg-gray-100 flex items-center cursor-pointer'
-        )
-          include ../icons/information.html
-          span(class='ml-2') Details
+      li(
+        @click=`() => {
+          isOpen = false;
+          $store.modal.open({ 
+            operation: 'details', 
+            values: ${stringifiedData} 
+          });
+        }`
+        class='px-4 py-2 hover:bg-gray-100 flex items-center cursor-pointer'
+      )
+        include ../icons/information.html
+        span(class='ml-2') Details
 
       li(
         @click=`() => {
