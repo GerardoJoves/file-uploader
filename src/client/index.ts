@@ -1,6 +1,6 @@
 import alpinejs, { Alpine } from 'alpinejs';
 
-type ModalOperation =
+type ModalAction =
   | 'createChildFolder'
   | 'uploadFile'
   | 'renameFolder'
@@ -12,35 +12,26 @@ type ModalOperation =
 
 interface ModalState {
   isOpen: boolean;
-  endpoint?: string;
-  operation: ModalOperation;
+  action: ModalAction;
   values: object;
-}
-
-interface ModalOpenParams {
-  operation: ModalOperation;
-  endpoint?: string;
-  values?: object;
 }
 
 const Alpine = alpinejs as unknown as Alpine;
 
 Alpine.store('modal', <ModalState>{
   isOpen: false,
-  operation: '',
+  action: '',
   values: {},
 
-  open({ operation, endpoint, values }: ModalOpenParams) {
+  open(action: ModalAction, values: object = {}) {
     this.isOpen = true;
-    this.operation = operation;
-    this.endpoint = endpoint;
-    this.values = values || {};
+    this.action = action;
+    this.values = values;
   },
 
   close() {
     this.isOpen = false;
-    this.endpoint = '';
-    this.operation = '';
+    this.action = '';
     this.values = {};
   },
 });

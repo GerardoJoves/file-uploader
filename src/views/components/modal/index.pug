@@ -1,7 +1,7 @@
 mixin form({ heading, submitText = 'Submit', cancelText = 'Cancel' })
   form(
     x-data='{ submitted: false }'
-    :action='endpoint'
+    action!=attributes.action
     @submit='submitted = true'
     @click.outside='() => submitted || close()'
     enctype!=attributes.enctype 
@@ -12,6 +12,7 @@ mixin form({ heading, submitText = 'Submit', cancelText = 'Cancel' })
       div(class='loader')
       p(class='mt-3 text-center text-gray-700 text-sm') Your request is being processed... Please wait.
     h2(class='mb-5 text-lg')= heading
+    input(hidden :disabled='!values.blockId' type='text' name='id' :value='values.blockId')
 
     block
 
@@ -28,6 +29,17 @@ mixin form({ heading, submitText = 'Submit', cancelText = 'Cancel' })
         class='text-sm text-gray-700 px-3 py-2 bg-white hover:bg-gray-100 rounded-lg disabled:text-gray-400'
       )= submitText
 
+mixin nameInput
+  input(
+    id='name' 
+    type="text" 
+    name='name' 
+    x-model='values.name' 
+    class='input-primary' 
+    required 
+    autocomplete='off'
+  )
+
 // overlay
 div(
   x-cloak
@@ -40,54 +52,46 @@ div(
   // modal body
   div(class='relative bg-white max-w-[400px] max-h-full rounded-lg w-full overflow-hidden grid grid-rows-1 grid-cols-1')
 
-    template(x-if="operation === 'createChildFolder'")
-      +form({ 
-        heading: 'New Folder', 
-        submitText: 'Create' 
-      })(submitDisabled='values.name.trim() === "" || values.name.length > 255')
-        input(
-          id='name' 
-          type="text" 
-          name='name' 
-          x-model='values.name' 
-          class='input-primary' 
-          required 
-          autocomplete='off'
-        )
+    template(x-if="action === 'createChildFolder'")
+      +form({ heading: 'New Folder', submitText: 'Create' })(
+        submitDisabled='values.name.trim() === "" || values.name.length > 255'
+        action=`${folderPath}/create_folder`
+      )
+        +nameInput
 
-    template(x-if="operation === 'renameFolder' || operation === 'renameFile'")
-      +form({ 
-        heading: 'Rename' 
-      })(submitDisabled='values.name.trim() === "" || values.name.length > 255')
-        input(
-          id='name' 
-          type="text" 
-          name='name' 
-          x-model='values.name' 
-          class='input-primary' 
-          required 
-          autocomplete='off'
-        )
+    template(x-if="action === 'renameFile'")
+      +form({ heading: 'Rename File' })(
+        submitDisabled='values.name.trim() === "" || values.name.length > 255'
+        action='/files/update'
+      )
+        +nameInput
 
-    template(x-if="operation === 'deleteFolder'")
-      +form({ heading: 'Delete Folder', submitText: 'Delete' })
+    template(x-if="action === 'renameFolder'")
+      +form({ heading: 'Rename Folder' })(
+        submitDisabled='values.name.trim() === "" || values.name.length > 255'
+        action='/folders/update'
+      )
+        +nameInput
+
+    template(x-if="action === 'deleteFolder'")
+      +form({ heading: 'Delete Folder', submitText: 'Delete' })(action='/folders/delete')
         p(class='text-gray-700 text-sm') 
           | Are you sure you want to delete the folder "
           span(x-text='values.name' class='break-words')
           | "? All content within the folder will also be deleted.
 
-    template(x-if="operation === 'deleteFile'")
-      +form({ heading: 'Delete File', submitText: 'Delete' })
+    template(x-if="action === 'deleteFile'")
+      +form({ heading: 'Delete File', submitText: 'Delete' })(action='/files/delete')
         p(class='text-gray-700 text-sm')
           | Are you sure you want to delete the file "
           span(x-text='values.name' class='break-words')
           | "?
 
-    template(x-if="operation === 'uploadFile'")
-      +form({ 
-        heading: 'New File', 
-        submitText: 'Upload' 
-      })(enctype='multipart/form-data')
+    template(x-if="action === 'uploadFile'")
+      +form({ heading: 'New File', submitText: 'Upload' })(
+        enctype='multipart/form-data'
+        action=`${folderPath}/upload_file`
+      )
         input(
             x-data='{ maxSize: 5 * 1024 * 1024 }'
             @change=`() => {
@@ -104,7 +108,7 @@ div(
           include ../icons/information.html
           span(class='ml-1') Max file size: 5MB.
 
-    template(x-if="operation === 'details'")
+    template(x-if="action === 'details'")
       div(@click.outside='close' class='w-full h-full px-5 py-6 text-sm text-gray-700 overflow-y-auto')
         button(type='button' @click='close' class='text-2xl absolute top-6 right-5 rounded-full hover:bg-gray-100')
           include ../icons/x.html

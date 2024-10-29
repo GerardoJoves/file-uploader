@@ -2,45 +2,79 @@ import { Request, Response } from 'express';
 import asyncHandler from 'express-async-handler';
 import { matchedData, validationResult } from 'express-validator';
 import { format } from 'date-fns';
-import { Block, Prisma } from '@prisma/client';
 import { markAsDeletedCascade } from '@prisma/client/sql';
 
 import convertFileSize from '../helpers/convertFileSize.js';
 import prisma from '../lib/prisma.js';
-import { blockNameValidation } from '../middleware/validation.js';
 import supabase from '../lib/supabase.js';
+import {
+  blockIdParamValidation,
+  blockIdValidation,
+  blockNameValidation,
+} from '../middleware/validation.js';
 
-const folderGet = asyncHandler(async (req: Request, res: Response) => {
+const userRootGet = asyncHandler(async (req: Request, res: Response) => {
   const user = req.user as Express.User;
-  const id = req.params.id;
 
-  const where: Prisma.BlockWhereInput = id
-    ? { type: 'FOLDER', id: id, ownerId: user.id, deletionTime: null }
-    : { type: 'ROOT', ownerId: user.id }; // If no id is provided retrieve user's ROOT
-  const include: Prisma.BlockInclude = {
-    children: {
-      where: { deletionTime: null },
-      orderBy: { type: 'desc' },
-      include: { owner: { select: { id: true, username: true } } },
+  const folder = await prisma.block.findFirst({
+    where: { type: 'ROOT', ownerId: user.id },
+    include: {
+      children: {
+        where: { deletionTime: null },
+        orderBy: { type: 'desc' },
+        include: { owner: { select: { id: true, username: true } } },
+      },
+      parentFolder: true,
     },
-    parentFolder: true,
-  };
+  });
 
-  const folder = await prisma.block.findFirst({ where, include });
-  if (!folder) throw new Error('404');
+  if (!folder) throw new Error('500');
   res.render('pages/folder', {
     title: folder.name,
     folder,
     user,
     format,
     convertFileSize,
-    folderPath: folder.type === 'ROOT' ? '/home' : `/folders/${folder.id}`,
+    folderPath: '/home',
   });
 });
+
+const folderGet = [
+  blockIdParamValidation(),
+  asyncHandler(async (req: Request, res: Response) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) throw new Error('400');
+    const { id } = matchedData<{ id: string }>(req, { locations: ['params'] });
+    const user = req.user as Express.User;
+
+    const folder = await prisma.block.findFirst({
+      where: { type: 'FOLDER', id: id, ownerId: user.id, deletionTime: null },
+      include: {
+        children: {
+          where: { deletionTime: null },
+          orderBy: { type: 'desc' },
+          include: { owner: { select: { id: true, username: true } } },
+        },
+        parentFolder: true,
+      },
+    });
+
+    if (!folder) throw new Error('404');
+    res.render('pages/folder', {
+      title: folder.name,
+      folder,
+      user,
+      format,
+      convertFileSize,
+      folderPath: `/folders/${folder.id}`,
+    });
+  }),
+];
 
 const createFolderPost = [
   blockNameValidation(),
   asyncHandler(async (req: Request, res: Response) => {
+    if (!req.parentFolder) throw new Error('500');
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       res.render('pages/create_folder_form', {
@@ -49,7 +83,7 @@ const createFolderPost = [
       });
     }
     const user = req.user as Express.User;
-    const parentFolder = req.parentFolder as Block;
+    const { parentFolder } = req;
     const { name } = matchedData<{ name: string }>(req);
     await prisma.block.create({
       data: {
@@ -68,19 +102,15 @@ const createFolderPost = [
 
 const updateFolderPost = [
   blockNameValidation(),
+  blockIdValidation(),
   asyncHandler(async (req: Request, res: Response) => {
     const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      res.render('pages/create_folder_form', {
-        title: 'Update Folder',
-        errors: errors.array(),
-      });
-    }
+    if (!errors.isEmpty()) throw new Error('400');
     const user = req.user as Express.User;
-    const { name } = matchedData<{ name: string }>(req);
+    const { id, name } = matchedData<{ id: string; name: string }>(req);
     const updatedFolder = await prisma.block.update({
       where: {
-        id: req.params.id,
+        id: id,
         ownerId: user.id,
         type: 'FOLDER',
         deletionTime: null,
@@ -92,39 +122,46 @@ const updateFolderPost = [
   }),
 ];
 
-const deleteFolderPost = asyncHandler(async (req: Request, res: Response) => {
-  const user = req.user as Express.User;
-  const folder = await prisma.block.findUnique({
-    where: { id: req.params.id, type: 'FOLDER', ownerId: user.id },
-    include: { parentFolder: true },
-  });
-  if (!folder) return res.redirect('/home');
+const deleteFolderPost = [
+  blockIdValidation(),
+  asyncHandler(async (req: Request, res: Response) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) throw new Error('400');
+    const { id } = matchedData<{ id: string }>(req);
+    const user = req.user as Express.User;
+    const folder = await prisma.block.findUnique({
+      where: { id: id, type: 'FOLDER', ownerId: user.id },
+      include: { parentFolder: true },
+    });
+    if (!folder) return res.redirect('/home');
 
-  const deletedBlocks = await prisma.$queryRawTyped(
-    markAsDeletedCascade(folder.id, new Date()),
-  );
-  const deletedFileIds: string[] = [];
-  deletedBlocks.forEach((block) => {
-    if (block.type === 'FILE') deletedFileIds.push(block.id);
-  });
+    const deletedBlocks = await prisma.$queryRawTyped(
+      markAsDeletedCascade(folder.id, new Date()),
+    );
+    const deletedFileIds: string[] = [];
+    deletedBlocks.forEach((block) => {
+      if (block.type === 'FILE') deletedFileIds.push(block.id);
+    });
 
-  let storeError;
-  if (deletedFileIds.length > 0) {
-    const { error } = await supabase.storage
-      .from('files')
-      .remove(deletedFileIds);
-    storeError = error;
-  }
-  if (!storeError) await prisma.block.delete({ where: { id: folder.id } });
+    let storeError;
+    if (deletedFileIds.length > 0) {
+      const { error } = await supabase.storage
+        .from('files')
+        .remove(deletedFileIds);
+      storeError = error;
+    }
+    if (!storeError) await prisma.block.delete({ where: { id: folder.id } });
 
-  res.redirect(
-    folder.parentFolder && folder.parentFolder.type != 'ROOT'
-      ? `/folders/${folder.parentFolder.id}`
-      : '/home',
-  );
-});
+    res.redirect(
+      folder.parentFolder && folder.parentFolder.type != 'ROOT'
+        ? `/folders/${folder.parentFolder.id}`
+        : '/home',
+    );
+  }),
+];
 
 export default {
+  userRootGet,
   folderGet,
   createFolderPost,
   updateFolderPost,

@@ -9,14 +9,21 @@ const router = Router();
 
 router.use(isAuthenticated);
 
-router.post('/:id/upload_file', fileController.uploadFilePost);
+router.post('/update', folderController.updateFolderPost);
+router.post('/delete', folderController.deleteFolderPost);
+
+router.post(
+  '/:id/upload_file',
+  setParentFolderById,
+  fileController.uploadFilePost,
+);
+
 router.post(
   '/:id/create_folder',
   setParentFolderById,
   folderController.createFolderPost,
 );
-router.post('/:id/update', folderController.updateFolderPost);
-router.post('/:id/delete', folderController.deleteFolderPost);
+
 router.get('/:id', folderController.folderGet);
 
 export default router;

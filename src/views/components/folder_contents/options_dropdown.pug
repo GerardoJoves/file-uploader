@@ -1,6 +1,6 @@
-- const renameOperation = blockType === 'FOLDER' ? 'renameFolder' : 'renameFile';
-- const deleteOperation = blockType === 'FOLDER' ? 'deleteFolder' : 'deleteFile';
-- const blockData = { ownerDisplay, modified, size, created, contentType, name, blockType };
+- const blockRenameAction = blockType === 'FOLDER' ? 'renameFolder' : 'renameFile';
+- const blockDeleteAction = blockType === 'FOLDER' ? 'deleteFolder' : 'deleteFile';
+- const blockData = { blockId, ownerDisplay, modified, size, created, contentType, name, blockType };
 - const stringifiedData = JSON.stringify(blockData);
 
 div(
@@ -35,7 +35,7 @@ div(
 
       if blockType === 'FILE'
         li(@click='isOpen = false'): a(
-          href=`${path}/download`
+          href=`/files/${blockId}/download`
           @click='isOpen = false'
           class='px-4 py-2 hover:bg-gray-100 flex items-center cursor-pointer'
         )
@@ -45,24 +45,44 @@ div(
       li(
         @click=`() => {
           isOpen = false;
-          $store.modal.open({ 
-            operation: 'details', 
-            values: ${stringifiedData} 
-          });
+          $store.modal.open('details', ${ stringifiedData });
         }`
         class='px-4 py-2 hover:bg-gray-100 flex items-center cursor-pointer'
       )
         include ../icons/information.html
         span(class='ml-2') Details
 
+      li(x-data='{ isLoading: false }' :class="isLoading && 'text-gray-500'")
+        button(
+          type='submit'
+          @click=`() => {
+            isOpen = false;
+            if (isLoading) return;
+            isLoading = true;
+            fetch('/favorites/${favorite ? 'remove' : 'add'}', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ id: '${blockId}' })
+            })
+            .then((res) => {
+              if (res.ok) location.reload();
+            })
+            .finally(() => {
+              isLoading: false
+            })
+          }` 
+          class='w-full px-4 py-2 hover:bg-gray-100 flex items-center cursor-pointer'
+        )
+          if favorite
+            include ../icons/star_fill.html
+          else
+            include ../icons/star.html
+          span(class='ml-2')= favorite ? 'Unfavorite' : 'Favorite'
+
       li(
         @click=`() => {
           isOpen = false;
-          $store.modal.open({
-            operation: '${renameOperation}', 
-            endpoint: '${path}/update', 
-            values: { name: '${name}' } 
-          });
+          $store.modal.open('${blockRenameAction}', ${stringifiedData} );
         }`
         class='px-4 py-2 hover:bg-gray-100 flex items-center cursor-pointer'
       )
@@ -71,12 +91,8 @@ div(
 
       li(
         @click=`() => {
-          $store.modal.open({
-            operation: '${deleteOperation}', 
-            endpoint: '${path}/delete', 
-            values: { name: '${name}' } 
-          });
           isOpen = false;
+          $store.modal.open('${blockDeleteAction}', ${stringifiedData} );
         }`
         class='px-4 py-2 hover:bg-gray-100 flex items-center cursor-pointer'
       )

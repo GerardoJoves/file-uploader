@@ -43,8 +43,9 @@ model Block {
   updatedAt      DateTime  @updatedAt
   contentType    String?
   sizeInBytes    Int?
+  favorite       Boolean   @default(false)
 
-  @@index([ownerId, type, name])
+  @@index([ownerId, type, favorite, name])
 }
 
 enum BlockType {

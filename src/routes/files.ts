@@ -7,9 +7,10 @@ const router = Router();
 
 router.use(isAuthenticated);
 
+router.post('/delete', fileController.deleteFilePost);
+router.post('/update', fileController.updateFilePost);
+
 router.get('/:id/download', fileController.downloadFileGet);
-router.post('/:id/delete', fileController.deleteFilePost);
-router.post('/:id/update', fileController.updateFilePost);
 router.get('/:id', fileController.fileGet);
 
 export default router;

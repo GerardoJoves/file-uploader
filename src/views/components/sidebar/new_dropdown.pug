@@ -18,10 +18,7 @@ div(x-data='{ isOpen: false }' class='relative')
         @click=`() => {
           isOpen = false;
           isSidebarActive = false;
-          $store.modal.open({
-            operation: 'uploadFile', 
-            endpoint: '${folderPath}/upload_file'
-          });
+          $store.modal.open('uploadFile');
         }`
       )
         include ../icons/file_upload.html
@@ -31,11 +28,7 @@ div(x-data='{ isOpen: false }' class='relative')
         @click=`() => {
           isOpen = false;
           isSidebarActive = false;
-          $store.modal.open({
-            operation: 'createChildFolder', 
-            endpoint: '${folderPath}/create_folder', 
-            values: { name: 'Untitled Folder' }
-          });
+          $store.modal.open('createChildFolder', { name: 'Untitled Folder' });
         }`
       )
         include ../icons/folder_plus.html

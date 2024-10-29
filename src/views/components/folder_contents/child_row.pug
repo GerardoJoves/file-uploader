@@ -3,20 +3,25 @@
 - const size = child.sizeInBytes ? convertFileSize(child.sizeInBytes) : '-';
 - const created = format(child.uploadTime, 'MMM d, yyy');
 - const contentType = child.contentType;
+- const favorite = child.favorite;
 - const blockType = child.type;
-- const name = child.name
-- const path = (blockType === 'FOLDER' ? '/folders/' : '/files/') + child.id;
+- const name = child.name;
+- const blockId = child.id;
 
 tr(class='border-b border-gray-300 hover:bg-gray-100')
   td
     if blockType === 'FOLDER'
-      a(href= path class='px-4 py-3 flex items-center gap-3 w-full h-full max-w-[45vw] sm:max-w-[30vw] 2xl:max-w-[40vw]')
+      a(href=`/folders/${blockId}` class='px-4 py-3 flex items-center w-full h-full max-w-[45vw] sm:max-w-[30vw] 2xl:max-w-[40vw]')
         span(class='text-xl'): include ../icons/folder.html
-        span(class='whitespace-nowrap truncate')= name
+        span(class='whitespace-nowrap truncate ml-3 mr-2')= name
+        if favorite
+          span(class='text-gray-700 text-xs'): include ../icons/star_fill.html
     else
-      div(class='px-4 py-3 flex items-center gap-3 w-full h-full max-w-[45vw] sm:max-w-[30vw] xl:max-w-[40vw]')
+      div(class='px-4 py-3 flex items-center w-full h-full max-w-[45vw] sm:max-w-[30vw] xl:max-w-[40vw]')
         span(class='text-xl'): include ../icons/file.html
-        span(class='whitespace-nowrap truncate')= name
+        span(class='whitespace-nowrap truncate ml-3 mr-2')= name
+        if favorite
+          span(class='text-gray-700 text-xs'): include ../icons/star_fill.html
   td: div(class='text-gray-600 px-4 py-3 hidden lg:block')= ownerDisplay
   td: div(class='text-gray-600 whitespace-nowrap px-4 py-3 hidden xxs:block sm:hidden md:block')= modified
   td: div(class='text-gray-600 whitespace-nowrap px-4 py-3 hidden xs:block sm:hidden lg:block')= size

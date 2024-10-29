@@ -11,6 +11,7 @@ import signupRouter from './routes/signup.js';
 import usersRouter from './routes/users.js';
 import foldersRouter from './routes/folders.js';
 import filesRouter from './routes/files.js';
+import favoritesRouter from './routes/favorites.js';
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -38,5 +39,6 @@ app.use('/sign_up', signupRouter);
 app.use('/users', usersRouter);
 app.use('/folders', foldersRouter);
 app.use('/files', filesRouter);
+app.use('/favorites', favoritesRouter);
 
 app.listen(PORT, () => console.log(`App running on port ${PORT}`));

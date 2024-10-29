@@ -9,7 +9,7 @@ const router = Router();
 
 router.use(isAuthenticated);
 
-router.get('/', folderController.folderGet);
+router.get('/', folderController.userRootGet);
 
 router.post(
   '/upload_file',
