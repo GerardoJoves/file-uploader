@@ -1,12 +1,22 @@
-form(class='w-full max-w-[600px]')
+form(x-data="{ q: '', maxChars: 100 }" action='/home/search' class='w-full max-w-[600px]')
   label(for='default-search' class='mb-2 text-sm font-medium text-gray-900 sr-only') Search
   div(class='relative')
     div(class='absolute pl-4 top-0 left-0 h-full pointer-events-none text-gray-500 flex items-center')
       include ../icons/magnifier.html
     input(
-      type='search' 
+      type='search'
+      x-model='q'
+      name='q'
+      @input=`() => {
+        if (q <= maxChars) retrun;
+        q = q.slice(0, maxChars);
+      }`
       id='default-search' 
       class='block w-full p-4 pl-10 text-sm text-gray-900 border border-gray-300 rounded-xl bg-white'
     )
     div(class='absolute pr-4 top-0 right-0 h-full flex items-center')
-      button(type='submit' class='text-sm text-gray-700 px-3 py-2 bg-white hover:bg-gray-100 rounded-lg') Search
+      button(
+        type='submit' 
+        :disabled="q.trim() === ''"
+        class='text-sm text-gray-700 px-3 py-2 bg-white hover:bg-gray-100 rounded-lg'
+      ) Search

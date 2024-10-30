@@ -816,6 +816,14 @@ video {
   max-width: 600px;
 }
 
+.max-w-\[50vw\] {
+  max-width: 50vw;
+}
+
+.max-w-\[60vw\] {
+  max-width: 60vw;
+}
+
 .flex-grow {
   flex-grow: 1;
 }
@@ -1211,6 +1219,10 @@ video {
 @media (min-width: 400px) {
   .xxs\:block {
     display: block;
+  }
+
+  .xxs\:max-w-\[45vw\] {
+    max-width: 45vw;
   }
 }
 

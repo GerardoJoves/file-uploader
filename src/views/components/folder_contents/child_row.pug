@@ -11,13 +11,13 @@
 tr(class='border-b border-gray-300 hover:bg-gray-100')
   td
     if blockType === 'FOLDER'
-      a(href=`/folders/${blockId}` class='px-4 py-3 flex items-center w-full h-full max-w-[45vw] sm:max-w-[30vw] 2xl:max-w-[40vw]')
+      a(href=`/folders/${blockId}` class='px-4 py-3 flex items-center w-full h-full max-w-[60vw] xxs:max-w-[45vw] sm:max-w-[30vw] 2xl:max-w-[40vw]')
         span(class='text-xl'): include ../icons/folder.html
         span(class='whitespace-nowrap truncate ml-3 mr-2')= name
         if favorite
           span(class='text-gray-700 text-xs'): include ../icons/star_fill.html
     else
-      div(class='px-4 py-3 flex items-center w-full h-full max-w-[45vw] sm:max-w-[30vw] xl:max-w-[40vw]')
+      div(class='px-4 py-3 flex items-center w-full h-full max-w-[60vw] xxs:max-w-[45vw] sm:max-w-[30vw] xl:max-w-[40vw]')
         span(class='text-xl'): include ../icons/file.html
         span(class='whitespace-nowrap truncate ml-3 mr-2')= name
         if favorite

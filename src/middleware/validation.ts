@@ -1,4 +1,4 @@
-import { body, param } from 'express-validator';
+import { body, param, query } from 'express-validator';
 import prisma from '../lib/prisma.js';
 
 export type UserSignupData = {
@@ -50,9 +50,13 @@ const blockIdValidation = () => body('id').isUUID();
 
 const blockIdParamValidation = () => param('id').isUUID();
 
+const searchQueryValidation = () =>
+  query('q').trim().isLength({ min: 1, max: 100 });
+
 export {
   userSignupValidation,
   blockNameValidation,
   blockIdValidation,
   blockIdParamValidation,
+  searchQueryValidation,
 };
