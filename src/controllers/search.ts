@@ -20,7 +20,7 @@ const searchResultGet = [
         type: { in: ['FILE', 'FOLDER'] },
         name: { contains: q, mode: 'insensitive' },
       },
-      orderBy: { type: 'desc' },
+      orderBy: [{ type: 'desc' }, { name: 'asc' }],
       include: { owner: true },
     });
     res.render('pages/folder', {

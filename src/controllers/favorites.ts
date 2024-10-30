@@ -16,7 +16,7 @@ const favoritesGet = asyncHandler(async (req: Request, res: Response) => {
       favorite: true,
       deletionTime: null,
     },
-    orderBy: { type: 'desc' },
+    orderBy: [{ type: 'desc' }, { name: 'asc' }],
     include: { owner: true },
   });
   res.render('pages/folder', {

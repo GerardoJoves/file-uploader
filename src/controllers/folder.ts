@@ -21,7 +21,7 @@ const userRootGet = asyncHandler(async (req: Request, res: Response) => {
     include: {
       children: {
         where: { deletionTime: null },
-        orderBy: { type: 'desc' },
+        orderBy: [{ type: 'desc' }, { name: 'asc' }],
         include: { owner: { select: { id: true, username: true } } },
       },
       parentFolder: true,
@@ -52,7 +52,7 @@ const folderGet = [
       include: {
         children: {
           where: { deletionTime: null },
-          orderBy: { type: 'desc' },
+          orderBy: [{ type: 'desc' }, { name: 'asc' }],
           include: { owner: { select: { id: true, username: true } } },
         },
         parentFolder: true,
