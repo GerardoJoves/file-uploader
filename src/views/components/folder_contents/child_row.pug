@@ -8,21 +8,21 @@
 - const name = child.name;
 - const blockId = child.id;
 
-tr(class='border-b border-gray-300 hover:bg-gray-100')
-  td
+tr(class='text-gray-600 border-b border-gray-300 hover:bg-gray-100 flex justify-end')
+  td(class='grow w-0 text-gray-950')
     if blockType === 'FOLDER'
-      a(href=`/folders/${blockId}` class='px-4 py-3 flex items-center w-full h-full max-w-[60vw] xxs:max-w-[45vw] sm:max-w-[30vw] 2xl:max-w-[40vw]')
+      a(href=`/folders/${blockId}` class='px-4 py-3 flex items-center ')
         span(class='text-xl'): include ../icons/folder.html
         span(class='whitespace-nowrap truncate ml-3 mr-2')= name
         if favorite
           span(class='text-gray-700 text-xs'): include ../icons/star_fill.html
     else
-      div(class='px-4 py-3 flex items-center w-full h-full max-w-[60vw] xxs:max-w-[45vw] sm:max-w-[30vw] xl:max-w-[40vw]')
+      div(class='px-4 py-3 flex items-center ')
         span(class='text-xl'): include ../icons/file.html
         span(class='whitespace-nowrap truncate ml-3 mr-2')= name
         if favorite
           span(class='text-gray-700 text-xs'): include ../icons/star_fill.html
-  td: div(class='text-gray-600 px-4 py-3 hidden lg:block')= ownerDisplay
-  td: div(class='text-gray-600 whitespace-nowrap px-4 py-3 hidden xxs:block sm:hidden md:block')= modified
-  td: div(class='text-gray-600 whitespace-nowrap px-4 py-3 hidden xs:block sm:hidden lg:block')= size
-  td: div(class='text-gray-600 px-4'): include ./options_dropdown.pug
+  td(class='hidden lg:table-cell px-4 py-3 truncate w-32 xl:w-40')= ownerDisplay
+  td(class='hidden xxs:table-cell sm:hidden md:table-cell whitespace-nowrap px-4 py-3 w-32 xl:w-40')= modified
+  td(class='hidden xs:table-cell sm:hidden lg:table-cell whitespace-nowrap px-4 py-3 w-24 xl:w-32')= size
+  td(class='w-14'): include ./options_dropdown.pug

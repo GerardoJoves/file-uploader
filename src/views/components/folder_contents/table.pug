@@ -1,12 +1,11 @@
-table(class='w-full text-sm')
-  thead
-    tr(class= 'border-b border-gray-300 text-gray-600')
-      th(class='w-4/5')
-        div(class='text-left px-4 py-3 font-normal') Name
-      th: div(class='text-left px-4 py-3 font-normal hidden lg:block') Owner
-      th: div(class='text-left whitespace-nowrap px-4 py-3 font-normal hidden xxs:block sm:hidden md:block') Modified
-      th: div(class='text-left whitespace-nowrap px-4 py-3 font-normal hidden xs:block sm:hidden lg:block') File size
-      th
+table(class='text-sm table-fixed w-full')
+  thead(class='text-left')
+    tr(class='border-b border-gray-300 text-gray-600 flex justify-end')
+      th(class='px-4 py-3 font-normal grow w-0') Name
+      th(class='hidden lg:table-cell px-4 py-3 truncate font-normal w-32 xl:w-40') Owner
+      th(class='hidden xxs:table-cell sm:hidden md:table-cell px-4 py-3 font-normal w-32 xl:w-40') Modified
+      th(class='hidden xs:table-cell sm:hidden lg:table-cell px-4 py-3 font-normal w-24 xl:w-32') File size
+      th(class='w-14')
   tbody
     each child in folder.children
       include ./child_row.pug
