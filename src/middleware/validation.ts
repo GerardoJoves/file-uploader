@@ -44,7 +44,7 @@ const userSignupValidation = [
 ];
 
 const blockNameValidation = () =>
-  body('name').trim().exists().isLength({ min: 1, max: 255 });
+  body('name').trim().isLength({ min: 1, max: 255 });
 
 const blockIdValidation = () => body('id').isUUID();
 

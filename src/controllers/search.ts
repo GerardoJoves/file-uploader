@@ -29,7 +29,6 @@ const searchResultGet = [
       user,
       format,
       convertFileSize,
-      folderPath: '/home',
     });
   }),
 ];

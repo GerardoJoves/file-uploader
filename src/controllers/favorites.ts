@@ -25,7 +25,6 @@ const favoritesGet = asyncHandler(async (req: Request, res: Response) => {
     user,
     format,
     convertFileSize,
-    folderPath: '/home',
   });
 });
 

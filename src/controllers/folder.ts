@@ -77,10 +77,8 @@ const createFolderPost = [
     if (!req.parentFolder) throw new Error('500');
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      res.render('pages/create_folder_form', {
-        title: 'Create Folder',
-        errors: errors.array(),
-      });
+      res.status(400).end();
+      return;
     }
     const user = req.user as Express.User;
     const { parentFolder } = req;
@@ -94,9 +92,8 @@ const createFolderPost = [
         uploadTime: new Date(),
       },
     });
-    res.redirect(
-      parentFolder.type === 'ROOT' ? '/home' : `/folders/${parentFolder.id}`,
-    );
+
+    res.status(200).json({ status: 'success' });
   }),
 ];
 
@@ -108,7 +105,7 @@ const updateFolderPost = [
     if (!errors.isEmpty()) throw new Error('400');
     const user = req.user as Express.User;
     const { id, name } = matchedData<{ id: string; name: string }>(req);
-    const updatedFolder = await prisma.block.update({
+    await prisma.block.update({
       where: {
         id: id,
         ownerId: user.id,
@@ -116,9 +113,8 @@ const updateFolderPost = [
         deletionTime: null,
       },
       data: { name: name },
-      include: { parentFolder: true },
     });
-    res.redirect(updatedFolder ? `/folders/${updatedFolder.id}` : '/home');
+    res.status(200).json({ status: 'success' });
   }),
 ];
 
@@ -152,11 +148,7 @@ const deleteFolderPost = [
     }
     if (!storeError) await prisma.block.delete({ where: { id: folder.id } });
 
-    res.redirect(
-      folder.parentFolder && folder.parentFolder.type != 'ROOT'
-        ? `/folders/${folder.parentFolder.id}`
-        : '/home',
-    );
+    res.status(200).json({ status: 'success' });
   }),
 ];
 

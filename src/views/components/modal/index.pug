@@ -1,14 +1,32 @@
 mixin form({ heading, submitText = 'Submit', cancelText = 'Cancel' })
   form(
-    x-data='{ submitted: false }'
+    x-data='{ isLoading: false }'
     action!=attributes.action
-    @submit='submitted = true'
-    @click.outside='() => submitted || close()'
+    @submit.prevent=`() => {
+      isLoading = true;
+      const data = new URLSearchParams();
+      for (const pair of new FormData($event.target)) {
+        data.append(pair[0], pair[1]);
+      }
+
+      fetch($event.target.action, {
+        method: 'POST',
+        body: data,
+      })
+      .then((res) => {
+        if (!res.ok) return;
+        location.href = '${folderPath || '/home'}';
+      })
+      .catch(() => {
+        close();
+        isLoading = false;
+      })
+    }`
+    @click.outside='() => isLoading || close()'
     enctype!=attributes.enctype 
-    method='POST'
     class='relative px-5 py-6'
   )
-    div(x-show= 'submitted' x-transition class='bg-white p-4 h-full w-full absolute top-0 left-0 flex flex-col justify-center items-center rounded-lg')
+    div(x-show= 'isLoading' x-transition class='bg-white p-4 h-full w-full absolute top-0 left-0 flex flex-col justify-center items-center rounded-lg')
       div(class='loader')
       p(class='mt-3 text-center text-gray-700 text-sm') Your request is being processed... Please wait.
     h2(class='mb-5 text-lg')= heading
@@ -19,13 +37,13 @@ mixin form({ heading, submitText = 'Submit', cancelText = 'Cancel' })
     div(class='mt-5 flex justify-end gap-2')
       button(
         type='button' 
-        :disabled='submitted' 
+        :disabled='isLoading' 
         @click='close' 
         class='text-sm text-gray-700 px-3 py-2 bg-white hover:bg-gray-100 rounded-lg disabled:text-gray-400'
       )= cancelText
       button(
         type='submit' 
-        :disabled!='submitted || ' + (attributes.submitDisabled || 'false') 
+        :disabled!='isLoading || ' + (attributes.submitDisabled || 'false') 
         class='text-sm text-gray-700 px-3 py-2 bg-white hover:bg-gray-100 rounded-lg disabled:text-gray-400'
       )= submitText
 
@@ -52,10 +70,28 @@ div(
   // modal body
   div(class='relative bg-white max-w-[400px] max-h-full rounded-lg w-full overflow-hidden grid grid-rows-1 grid-cols-1')
 
+    template(x-if="action === 'favoritesAdd'")
+      +form({ heading: 'Favorites', submitText: 'Continue' })(
+        action=`/favorites/add`
+      )
+        p(class='text-gray-700 text-sm') 
+          | Add "
+          span(x-text='values.name' class='break-words')
+          | " to favorites.
+
+    template(x-if="action === 'favoritesRemove'")
+      +form({ heading: 'Favorites', submitText: 'Continue' })(
+        action=`/favorites/remove`
+      )
+        p(class='text-gray-700 text-sm') 
+          | Remove "
+          span(x-text='values.name' class='break-words')
+          | " from favorites.
+
     template(x-if="action === 'createChildFolder'")
       +form({ heading: 'New Folder', submitText: 'Create' })(
         submitDisabled='values.name.trim() === "" || values.name.length > 255'
-        action=`${folderPath}/create_folder`
+        action=`${folderPath || '/home'}/create_folder`
       )
         +nameInput
 
@@ -90,7 +126,7 @@ div(
     template(x-if="action === 'uploadFile'")
       +form({ heading: 'New File', submitText: 'Upload' })(
         enctype='multipart/form-data'
-        action=`${folderPath}/upload_file`
+        action=`${folderPath || '/home'}/upload_file`
       )
         input(
             x-data='{ maxSize: 5 * 1024 * 1024 }'

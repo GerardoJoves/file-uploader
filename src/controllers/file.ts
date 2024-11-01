@@ -66,9 +66,7 @@ const uploadFilePost = [
       });
     }
 
-    res.redirect(
-      parentFolder.type === 'ROOT' ? '/home' : `/folders/${parentFolder.id}`,
-    );
+    res.status(200).json({ status: 'success' });
   }),
 ];
 
@@ -98,11 +96,7 @@ const deleteFilePost = [
     } else {
       await prisma.block.delete({ where: { id: file.id } });
     }
-    res.redirect(
-      file.parentFolder && file.parentFolder.type != 'ROOT'
-        ? `/folders/${file.parentFolder.id}`
-        : '/home',
-    );
+    res.status(200).json({ status: 'success' });
   }),
 ];
 
@@ -140,7 +134,7 @@ const updateFilePost = [
     if (!errors.isEmpty()) throw new Error('400');
     const user = req.user as Express.User;
     const { id, name } = matchedData<{ id: string; name: string }>(req);
-    const updatedFile = await prisma.block.update({
+    await prisma.block.update({
       where: {
         id: id,
         ownerId: user.id,
@@ -148,10 +142,8 @@ const updateFilePost = [
         deletionTime: null,
       },
       data: { name: name },
-      include: { parentFolder: true },
     });
-    const parent = updatedFile.parentFolder;
-    res.redirect(parent?.type === 'ROOT' ? '/home' : `/folders/${parent?.id}`);
+    res.status(200).json({ status: 'success' });
   }),
 ];
 

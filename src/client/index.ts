@@ -8,6 +8,8 @@ type ModalAction =
   | 'deleteFolder'
   | 'deleteFile'
   | 'details'
+  | 'favoritesAdd'
+  | 'favoritesRemove'
   | '';
 
 interface ModalState {
