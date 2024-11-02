@@ -19,9 +19,15 @@ const favoritesGet = asyncHandler(async (req: Request, res: Response) => {
     orderBy: [{ type: 'desc' }, { name: 'asc' }],
     include: { owner: true },
   });
+
+  const pseudoFolder = {
+    name: 'Favorites',
+    children: favorites,
+    isPseudo: true, // This folder is a virtual representation, not a real database folder
+  };
   res.render('pages/folder', {
     title: 'Favorites',
-    folder: { name: 'Favorites', children: favorites },
+    folder: pseudoFolder,
     user,
     format,
     convertFileSize,

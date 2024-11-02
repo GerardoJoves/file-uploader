@@ -23,9 +23,15 @@ const searchResultGet = [
       orderBy: [{ type: 'desc' }, { name: 'asc' }],
       include: { owner: true },
     });
+
+    const pseudoFolder = {
+      name: 'Search result',
+      children: result,
+      isPseudo: true, // This folder is a virtual representation, not a real database folder
+    };
     res.render('pages/folder', {
       title: 'search',
-      folder: { name: 'Search result', children: result },
+      folder: pseudoFolder,
       user,
       format,
       convertFileSize,

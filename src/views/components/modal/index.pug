@@ -1,6 +1,10 @@
-mixin form({ heading, submitText = 'Submit', cancelText = 'Cancel' })
+// Pseudo folders are fake representations of folders that don't have an associated database record (Ex: search results).
+- const isPseudoFolder = folder.isPseudo;
+- const isRoot = folder.type === 'ROOT';
+
+mixin form({ heading, submitText = 'Submit', cancelText = 'Cancel', onSuccess = '' })
   form(
-    x-data='{ isLoading: false }'
+    x-data=`{ isLoading: false, onSuccess: '${onSuccess}' }`
     action!=attributes.action
     @submit.prevent=`() => {
       isLoading = true;
@@ -15,7 +19,8 @@ mixin form({ heading, submitText = 'Submit', cancelText = 'Cancel' })
       })
       .then((res) => {
         if (!res.ok) return;
-        location.href = '${folderPath || '/home'}';
+        if (onSuccess) location.href = onSuccess;
+        else location.reload();
       })
       .catch(() => {
         close();
@@ -89,9 +94,9 @@ div(
           | " from favorites.
 
     template(x-if="action === 'createChildFolder'")
-      +form({ heading: 'New Folder', submitText: 'Create' })(
+      +form({ heading: 'New Folder', submitText: 'Create', onSuccess: isPseudoFolder ? '/home' : '' })(
         submitDisabled='values.name.trim() === "" || values.name.length > 255'
-        action=`${folderPath || '/home'}/create_folder`
+        action=`${ isPseudoFolder || isRoot ? '/home': '/folders/' + folder.id }/create_folder`
       )
         +nameInput
 
@@ -124,9 +129,9 @@ div(
           | "?
 
     template(x-if="action === 'uploadFile'")
-      +form({ heading: 'New File', submitText: 'Upload' })(
+      +form({ heading: 'New File', submitText: 'Upload', onSuccess: isPseudoFolder ? '/home' : '' })(
         enctype='multipart/form-data'
-        action=`${folderPath || '/home'}/upload_file`
+        action=`${ isPseudoFolder || isRoot ? '/home': '/folders/' + folder.id }/upload_file`
       )
         input(
             x-data='{ maxSize: 5 * 1024 * 1024 }'

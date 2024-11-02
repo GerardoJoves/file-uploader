@@ -35,7 +35,6 @@ const userRootGet = asyncHandler(async (req: Request, res: Response) => {
     user,
     format,
     convertFileSize,
-    folderPath: '/home',
   });
 });
 
@@ -66,7 +65,6 @@ const folderGet = [
       user,
       format,
       convertFileSize,
-      folderPath: `/folders/${folder.id}`,
     });
   }),
 ];
