@@ -1,0 +1,28 @@
+doctype html
+html
+  head
+    title= title || 'File Uploader'
+    meta(charset='utf-8')
+    meta(name='viewport' content='width=device-width' initial-scale=1)
+    link(rel="stylesheet", href="/css/tailwind.output.css")
+    script(defer src="/javascript/bundle.js")
+  body(x-data='{ isSidebarActive: false }' class='relative text-gray-950 h-screen bg-gray-100')
+    // overlay
+    div(
+      x-cloak
+      x-show='isSidebarActive' 
+      class='absolute top-0 z-30 left-0 h-full w-full bg-gray-500/50 sm:hidden'
+    )
+    aside(
+      x-cloak
+      @click.outside='isSidebarActive = false'
+      :class="isSidebarActive ? 'translate-x-0' : '-translate-x-full'"
+      class='bg-gray-100 fixed top-0 left-0 z-40 w-64 h-screen transition-transform sm:translate-x-0'
+    )
+      include ../components/sidebar/index.pug
+    div(class='sm:ml-64 h-full grid grid-rows-[auto_1fr] grid-cols-1')
+      header(class='z-20')
+        include ../components/header/index.pug
+      main(class='bg-white sm:rounded-tl-xl sm:border border-gray-300')
+        block content
+    include ../components/modal/index.pug

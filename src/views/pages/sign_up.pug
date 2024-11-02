@@ -1,14 +1,36 @@
-main
-  h1= title
-  form(method='POST')
-    label(for='username') Username
-    input(id='username' name='username' type='text')
-    label(for='password') Password
-    input(id='password' name='password' type='password')
-    label(for='passwordConfirmation') Confirm password
-    input(id='passwordConfirmaiton' name='passwordConfirmation' type='password')
-    button(type='submit') Sign up
-  if errors
-    ul
-      each err in errors
-        li= err.msg
+extends ../layouts/default.pug
+
+block content
+  section(class='bg-gray-50')
+    div(class='flex flex-col items-center min-h-screen justify-center px-6 py-8 mx-auto')
+      div(class='flex items-center mb-6 text-2xl font-semibold text-gray-900')
+        span(class='text-3xl'): include ../components/icons/archive.html
+        span(class='ml-3 text-xl flex-grow') File_Uploader
+      div(class='w-full bg-white rounded-lg shadow md:mt-0 sm:max-w-md xl:p-0')
+        div(class='p-6 space-y-4 md:space-y-6 sm:p-8')
+          h1(class='text-xl font-blod leading-tight tracking-tight text-gray-900 md:text-2xl')
+           | Create an account
+          form(
+            x-data='signup'
+            method='POST' 
+            class='space-y-4 md:space-y-6')
+            div
+              label(for='username' class='block mb-2 text-sm font-medium text-gray-900')
+                | Username
+              input(type='text' x-model='username' @input='invalidateUsername' @input.debounce.500ms='validateUsername' name='username' id='username' class='input-primary')
+              p(x-show='usernameError' x-text='usernameError' class='mt-1 text-red-700 text-xs')
+            div
+              label(for='password' class='block mb-2 text-sm font-medium text-gray-900')
+                | Password
+              input(type='password' x-model='password' @input='invalidatePassword' @input.debounce.500ms='validatePassword' name='password' id='password' placeholder='••••••••' class='input-primary')
+              p(x-show='passwordError' x-text='passwordError' class='mt-1 text-red-700 text-xs')
+            div
+              label(for='confirm-password' class='block mb-2 text-sm font-medium text-gray-900')
+                | Confirm password
+              input(type='password' x-model='confirmPassword' @input='invalidateConfirmPassword' @input.debounce.500ms='validateConfirmPassword' name='confirm-password' id='confirm-password' placeholder='••••••••' class='input-primary')
+              p(x-show='confirmPasswordError' x-text='confirmPasswordError' class='mt-1 text-red-700 text-xs')
+            button(type='submit' x-cloak :disabled='submitDisabled' class='w-full text-white bg-blue-600 disabled:bg-gray-300 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center')
+              | Create an account
+            p(class='text-sm font-light text-gray-700')
+              | Already have an account? 
+              a(href='/users/log_in' class='hover:underline text-blue-700') Login here
