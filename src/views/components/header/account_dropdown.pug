@@ -10,6 +10,6 @@ div(x-data='{ isOpen: false }' class='relative p-2')
     class='absolute top-full right-0 z-10 rounded-lg shadow-lg w-44 bg-white'
   )
     ul(class='py-2 text-sm text-gray-700')
-      li(class='px-4 py-2 hover:bg-gray-100 flex items-center')
+      li: a(href='/users/log_out' @click='isOpen = false' class='px-4 py-2 hover:bg-gray-100 flex items-center')
         include ../icons/logout.html
         span(class='ml-2') Logout
