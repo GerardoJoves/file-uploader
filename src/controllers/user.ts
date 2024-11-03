@@ -19,7 +19,7 @@ const signupGet = (_req: Request, res: Response) => {
 
 const signupPost = [
   ...userSignupValidation,
-  asyncHandler(async (req: Request, res: Response) => {
+  asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       res.render('pages/sign_up', { title: 'Sign up', errors: errors.array() });
@@ -27,7 +27,7 @@ const signupPost = [
     }
     const { username, password } = matchedData<UserSignupData>(req);
     const hashedPassword = await bcrypt.hash(password, 10);
-    await prisma.user.create({
+    const user = await prisma.user.create({
       data: {
         username: username,
         password: hashedPassword,
@@ -36,7 +36,10 @@ const signupPost = [
         },
       },
     });
-    res.redirect('/users/log_in');
+    req.login(user, (err) => {
+      if (err) next(err);
+      else res.redirect('/home');
+    });
   }),
 ];
 
@@ -60,6 +63,19 @@ const loginPost = [
     });
   },
 ];
+
+const loginWithDemoGet = asyncHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const user = await prisma.user.findUnique({
+      where: { username: 'john_doe' },
+    });
+    if (!user) throw new Error('404');
+    req.login(user, (err) => {
+      if (err) next(err);
+      else res.redirect('/home');
+    });
+  },
+);
 
 const logoutGet = (req: Request, res: Response, next: NextFunction) => {
   req.logOut((err) => {
@@ -97,4 +113,5 @@ export default {
   loginPost,
   logoutGet,
   checkUsernameGet,
+  loginWithDemoGet,
 };

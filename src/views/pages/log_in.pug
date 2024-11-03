@@ -21,9 +21,11 @@ block content
             div
               label(for='password' class='block mb-2 text-sm font-medium text-gray-900')
                 | Password
-              input(type='password' x-model='password' @input='showErr = false' name='password' id='password' class='input-primary')
-            button(type='submit' x-cloak :disabled='!username || !password' class='w-full text-white bg-blue-600 disabled:bg-gray-300 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center')
+              input(type='password' x-model='password' @input='showErr = false' name='password' id='password' placeholder='••••••••' class='input-primary')
+            button(type='submit' x-cloak :disabled='!username.trim() || !password' class='w-full text-white bg-blue-600 disabled:bg-gray-300 hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center')
               | Log in
             p(class='text-sm font-light text-gray-700')
               | Don't have an account? 
-              a(href='/sign_up' class='hover:underline text-blue-700') Sign up here
+              a(href='/sign_up' class='hover:underline text-blue-700') Sign up here 
+              | or 
+              a(href='/users/log_in/demo' class='hover:underline text-blue-700') log in with demo account

@@ -5,7 +5,7 @@ const router = Router();
 
 router.get('/check-username', userController.checkUsernameGet);
 
-router.all('/log_in', (req: Request, res: Response, next: NextFunction) => {
+router.use('/log_in', (req: Request, res: Response, next: NextFunction) => {
   if (req.isAuthenticated()) res.redirect('/home');
   else next();
 });
@@ -14,6 +14,8 @@ router
   .route('/log_in')
   .get(userController.loginGet)
   .post(userController.loginPost);
+
+router.get('/log_in/demo', userController.loginWithDemoGet);
 
 router.get('/log_out', userController.logoutGet);
 
