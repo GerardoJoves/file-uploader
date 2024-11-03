@@ -763,16 +763,16 @@ video {
   display: none;
 }
 
+.h-52 {
+  height: 13rem;
+}
+
 .h-full {
   height: 100%;
 }
 
 .h-screen {
   height: 100vh;
-}
-
-.h-52 {
-  height: 13rem;
 }
 
 .max-h-full {
