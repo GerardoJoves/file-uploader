@@ -12,7 +12,9 @@
     "tailwind-watch": "tailwindcss -i ./src/styles/tailwind.input.css -o ./public/css/tailwind.output.css --watch",
     "webpack-watch": "webpack --watch",
     "type-check": "tsc --noEmit",
-    "prepare": "simple-git-hooks"
+    "prepare": "simple-git-hooks",
+    "build": "tailwindcss -i ./src/styles/tailwind.input.css -o ./public/css/tailwind.output.css && webpack && tsc && tscp",
+    "start": "node ./dist/app.js"
   },
   "simple-git-hooks": {
     "pre-commit": "npm run type-check"
@@ -36,6 +38,7 @@
     "ts-loader": "^9.5.1",
     "tsx": "^4.17.0",
     "typescript": "^5.6.3",
+    "typescript-cp": "^0.1.9",
     "typescript-eslint": "^8.2.0",
     "webpack-cli": "^5.1.4"
   },
