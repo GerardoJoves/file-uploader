@@ -2,8 +2,8 @@ import { Router } from 'express';
 
 import folderController from '../controllers/folder.js';
 import fileController from '../controllers/file.js';
-import isAuthenticated from 'src/middleware/isAuthenticated.js';
-import { setParentFolderById } from 'src/middleware/setParentFolder.js';
+import isAuthenticated from '../middleware/isAuthenticated.js';
+import { setParentFolderById } from '../middleware/setParentFolder.js';
 
 const router = Router();
 

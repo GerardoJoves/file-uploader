@@ -1,11 +1,11 @@
 import { validationResult, matchedData } from 'express-validator';
 import asyncHandler from 'express-async-handler';
 import { Request, Response } from 'express';
+import { format } from 'date-fns';
 
 import { searchQueryValidation } from '../middleware/validation.js';
 import prisma from '../lib/prisma.js';
 import convertFileSize from '../helpers/convertFileSize.js';
-import { format } from 'date-fns';
 
 const searchResultGet = [
   searchQueryValidation(),

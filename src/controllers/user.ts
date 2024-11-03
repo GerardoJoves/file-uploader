@@ -11,7 +11,7 @@ import {
   usernameValidationQuery,
   usernameValidaton,
   passwordValidation,
-} from 'src/middleware/validation.js';
+} from '../middleware/validation.js';
 
 const signupGet = (_req: Request, res: Response) => {
   res.render('pages/sign_up', { title: 'Sign up' });

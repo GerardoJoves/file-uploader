@@ -1,10 +1,10 @@
 import { Request, Response } from 'express';
 import asyncHandler from 'express-async-handler';
 import { validationResult, matchedData } from 'express-validator';
-
-import prisma from 'src/lib/prisma.js';
-import convertFileSize from '../helpers/convertFileSize.js';
 import { format } from 'date-fns';
+
+import prisma from '../lib/prisma.js';
+import convertFileSize from '../helpers/convertFileSize.js';
 import { blockIdValidation } from '../middleware/validation.js';
 
 const favoritesGet = asyncHandler(async (req: Request, res: Response) => {

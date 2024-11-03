@@ -1,7 +1,7 @@
 import { Router } from 'express';
 
 import favoritesController from '../controllers/favorites.js';
-import isAuthenticated from 'src/middleware/isAuthenticated.js';
+import isAuthenticated from '../middleware/isAuthenticated.js';
 
 const router = Router();
 

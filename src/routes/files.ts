@@ -1,7 +1,7 @@
 import { Router } from 'express';
 
 import fileController from '../controllers/file.js';
-import isAuthenticated from 'src/middleware/isAuthenticated.js';
+import isAuthenticated from '../middleware/isAuthenticated.js';
 
 const router = Router();
 
