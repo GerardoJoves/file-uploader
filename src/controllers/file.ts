@@ -34,7 +34,7 @@ const fileGet = [
 ];
 
 const uploadFilePost = [
-  upload.single('uploaded_file'),
+  upload.single('file'),
   asyncHandler(async (req: Request, res: Response) => {
     if (!req.file) throw new Error('400');
     if (!req.parentFolder) throw new Error('500');

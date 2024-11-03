@@ -2,23 +2,29 @@
 - const isPseudoFolder = folder.isPseudo;
 - const isRoot = folder.type === 'ROOT';
 
-mixin form({ heading, submitText = 'Submit', cancelText = 'Cancel', onSuccess = '' })
+mixin form({ heading, submitText = 'Submit', cancelText = 'Cancel', onSuccess = '', file = false })
   form(
     x-data=`{ isLoading: false, onSuccess: '${onSuccess}' }`
     action!=attributes.action
     @submit.prevent=`() => {
       isLoading = true;
-      const data = new URLSearchParams();
-      for (const pair of new FormData($event.target)) {
-        data.append(pair[0], pair[1]);
+      let data = new FormData($event.target);
+      const options = { method: 'POST' };
+
+      if (!data.has('file')) {
+        const tmp = {};
+        for (const [key, value] of data.entries()) {
+          tmp[key] = value;
+        }
+        options.headers = { 'Content-Type': 'application/json' };
+        data = JSON.stringify(tmp);
       }
 
-      fetch($event.target.action, {
-        method: 'POST',
-        body: data,
-      })
+      options.body = data;
+      
+      fetch($event.target.action, options)
       .then((res) => {
-        if (!res.ok) return;
+        if (!res.ok) return close();
         if (onSuccess) location.href = onSuccess;
         else location.reload();
       })
@@ -28,7 +34,6 @@ mixin form({ heading, submitText = 'Submit', cancelText = 'Cancel', onSuccess = 
       })
     }`
     @click.outside='() => isLoading || close()'
-    enctype!=attributes.enctype 
     class='relative px-5 py-6'
   )
     div(x-show= 'isLoading' x-transition class='bg-white p-4 h-full w-full absolute top-0 left-0 flex flex-col justify-center items-center rounded-lg')
@@ -130,7 +135,6 @@ div(
 
     template(x-if="action === 'uploadFile'")
       +form({ heading: 'New File', submitText: 'Upload', onSuccess: isPseudoFolder ? '/home' : '' })(
-        enctype='multipart/form-data'
         action=`${ isPseudoFolder || isRoot ? '/home': '/folders/' + folder.id }/upload_file`
       )
         input(
@@ -141,7 +145,7 @@ div(
               alert('File size exceeds 5MB limit.');
             }`
             type='file' 
-            name='uploaded_file' 
+            name='file' 
             required 
             class='w-full text-gray-400 font-semibold text-sm bg-white border file:cursor-pointer cursor-pointer file:border-0 file:py-3 file:px-4 file:mr-4 file:bg-gray-100 file:hover:bg-gray-200 file:text-gray-500 rounded'
           )
