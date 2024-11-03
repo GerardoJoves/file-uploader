@@ -3,6 +3,6 @@ div(class='relative px-3 pb-3 sm:px-6 grid grid-cols-1')
   if folder.children.length > 0
     include ./table.pug
   else
-    div(class='text-gray-700 flex flex-col items-center p-2')
-      div(class='text-5xl mb-4 mx-auto pt-4'): include ../icons/folder.html
+    div(class='text-gray-700 flex flex-col items-center justify-center p-2 h-52')
+      div(class='text-5xl mb-4 mx-auto'): include ../icons/folder.html
       p This folder is empty.
